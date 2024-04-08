@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>步骤8: 添加自定义命令和生成文件 &mdash; CMake 3.29.1-g21d0c57 Documentation</title>
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a2c47e09" />
+    <link rel="stylesheet" type="text/css" href="../../_static/cmake.css?v=3e562cf9" />
+    
+    <script src="../../_static/documentation_options.js?v=17f7ec5f"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/translations.js?v=beaddf03"></script>
+    
+    <link rel="icon" href="../../_static/cmake-favicon.ico"/>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="步骤9: 打包一个安装包" href="Packaging%20an%20Installer.html" />
+    <link rel="prev" title="步骤7: 添加系统自省" href="Adding%20System%20Introspection.html" />
+ 
+
+  </head><body>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="Packaging%20an%20Installer.html" title="步骤9: 打包一个安装包"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="Adding%20System%20Introspection.html" title="步骤7: 添加系统自省"
+             accesskey="P">上一页</a> |</li>
+  <li>
+    <img src="../../_static/cmake-logo-16.png" alt=""
+         style="vertical-align: middle; margin-top: -2px" />
+  </li>
+  <li>
+    <a href="https://cmake.org/">CMake</a> &#187;
+  </li>
+  <li>
+    <a href="../../index.html">3.29.1-g21d0c57 Documentation</a> &#187;
+  </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">CMake教程</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">步骤8: 添加自定义命令和生成文件</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="guide:tutorial/Adding a Custom Command and Generated File">
+<span id="id1"></span><h1>步骤8: 添加自定义命令和生成文件<a class="headerlink" href="#guide:tutorial/Adding a Custom Command and Generated File" title="Link to this heading">¶</a></h1>
+<p>假设，出于教学目的，我们决定不使用自带的<code class="docutils literal notranslate"><span class="pre">log</span></code>和<code class="docutils literal notranslate"><span class="pre">exp</span></code>函数，而希望生成一个包含预计算值的表，以便在<code class="docutils literal notranslate"><span class="pre">mysqrt</span></code>中使用。本节中，我们将创建表作为构建过程的一部分，并且将表编译到我们的程序中。</p>
+<p>首先，删除<code class="docutils literal notranslate"><span class="pre">MathFunctions/CMakeLists.txt</span></code>中对<code class="docutils literal notranslate"><span class="pre">log</span></code>和<code class="docutils literal notranslate"><span class="pre">exp</span></code>的检查。然后删除<code class="docutils literal notranslate"><span class="pre">mysqrt.cxx</span></code>中对<code class="docutils literal notranslate"><span class="pre">HAVE_LOG</span></code>和<code class="docutils literal notranslate"><span class="pre">HAVE_EXP</span></code>的检查，与此同时可以删除<code class="code docutils literal notranslate"><span class="pre">#include</span> <span class="pre">&lt;cmath&gt;</span></code>。</p>
+<p><code class="docutils literal notranslate"><span class="pre">MathFunctions</span></code>目录中有一個名为<code class="docutils literal notranslate"><span class="pre">MakeTable.cxx</span></code>的源文件来提供生成表。</p>
+<p>检视这个文件后，可以看到这个表以C++代码展现，输出文件名通过参数传达。</p>
+<p>下一步是创建<code class="docutils literal notranslate"><span class="pre">MathFunctions/MakeTable.cmake</span></code>。然后，将适当的命令添加到文件中以构建<code class="docutils literal notranslate"><span class="pre">MakeTable</span></code>可执行文件，然后将其作为构建过程的一部分运行。需要几个命令来完成这个任务。</p>
+<p>首先，我们为<code class="docutils literal notranslate"><span class="pre">MakeTable</span></code>添加一个可执行文件。</p>
+<div class="literal-block-wrapper docutils container" id="mathfunctions-maketable-cmake-add-executable-maketable">
+<div class="code-block-caption"><span class="caption-text">MathFunctions/MakeTable.cmake</span><a class="headerlink" href="#mathfunctions-maketable-cmake-add-executable-maketable" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">add_executable(</span><span class="nb">MakeTable</span><span class="w"> </span><span class="nb">MakeTable.cxx</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+<p>在创建可执行文件之后，我们使用<span class="target" id="index-0-command:target_link_libraries"></span><a class="reference internal" href="../../command/target_link_libraries.html#command:target_link_libraries" title="target_link_libraries"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_link_libraries()</span></code></a>将<code class="docutils literal notranslate"><span class="pre">tutorial_compiler_flags</span></code>添加到可执行文件中。</p>
+<div class="literal-block-wrapper docutils container" id="mathfunctions-maketable-cmake-link-tutorial-compiler-flags">
+<div class="code-block-caption"><span class="caption-text">MathFunctions/MakeTable.cmake</span><a class="headerlink" href="#mathfunctions-maketable-cmake-link-tutorial-compiler-flags" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">target_link_libraries(</span><span class="nb">MakeTable</span><span class="w"> </span><span class="no">PRIVATE</span><span class="w"> </span><span class="nb">tutorial_compiler_flags</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+<p>然后，我们添加一个自定义命令，指定如何通过运行MakeTable生成<code class="docutils literal notranslate"><span class="pre">Table.h</span></code>。</p>
+<div class="literal-block-wrapper docutils container" id="mathfunctions-maketable-cmake-add-custom-command-table-h">
+<div class="code-block-caption"><span class="caption-text">MathFunctions/MakeTable.cmake</span><a class="headerlink" href="#mathfunctions-maketable-cmake-add-custom-command-table-h" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">add_custom_command(</span>
+<span class="w">  </span><span class="no">OUTPUT</span><span class="w"> </span><span class="o">${</span><span class="nt">CMAKE_CURRENT_BINARY_DIR</span><span class="o">}</span><span class="na">/Table.h</span>
+<span class="w">  </span><span class="no">COMMAND</span><span class="w"> </span><span class="nb">MakeTable</span><span class="w"> </span><span class="o">${</span><span class="nt">CMAKE_CURRENT_BINARY_DIR</span><span class="o">}</span><span class="na">/Table.h</span>
+<span class="w">  </span><span class="no">DEPENDS</span><span class="w"> </span><span class="nb">MakeTable</span>
+<span class="w">  </span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+<p>接下来需要让CMake知道<code class="docutils literal notranslate"><span class="pre">mysqrt.cxx</span></code>依赖于那个生成的<code class="docutils literal notranslate"><span class="pre">Table.h</span></code>。这是通过将<code class="docutils literal notranslate"><span class="pre">Table.h</span></code>添加到``SqrtLibrary``的源码列表达到的。</p>
+<div class="literal-block-wrapper docutils container" id="mathfunctions-cmakelists-txt-add-library-table-h">
+<div class="code-block-caption"><span class="caption-text">MathFunctions/CMakeLists.txt</span><a class="headerlink" href="#mathfunctions-cmakelists-txt-add-library-table-h" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nf">add_library(</span><span class="nb">SqrtLibrary</span><span class="w"> </span><span class="no">STATIC</span>
+<span class="w">              </span><span class="nb">mysqrt.cxx</span>
+<span class="w">              </span><span class="o">${</span><span class="nt">CMAKE_CURRENT_BINARY_DIR</span><span class="o">}</span><span class="na">/Table.h</span>
+<span class="w">              </span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+<p>我们必须将当前目录加入引入目录列表，令<code class="docutils literal notranslate"><span class="pre">Table.h</span></code>能够被<code class="docutils literal notranslate"><span class="pre">mysqrt.cxx</span></code>找到并引用。</p>
+<div class="literal-block-wrapper docutils container" id="mathfunctions-cmakelists-txt-target-include-directories-table-h">
+<div class="code-block-caption"><span class="caption-text">MathFunctions/CMakeLists.txt</span><a class="headerlink" href="#mathfunctions-cmakelists-txt-target-include-directories-table-h" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nf">target_include_directories(</span><span class="nb">SqrtLibrary</span><span class="w"> </span><span class="no">PRIVATE</span>
+<span class="w">                             </span><span class="o">${</span><span class="nt">CMAKE_CURRENT_BINARY_DIR</span><span class="o">}</span>
+<span class="w">                             </span><span class="nf">)</span>
+
+<span class="w">  </span><span class="c"># link SqrtLibrary to tutorial_compiler_flags</span>
+</pre></div>
+</div>
+</div>
+<p>作为最后一步，我们需要在<code class="docutils literal notranslate"><span class="pre">MathFunctions/CMakeLists.txt</span></code>的顶部包含<code class="docutils literal notranslate"><span class="pre">MakeTable.cmake</span></code>。</p>
+<div class="literal-block-wrapper docutils container" id="mathfunctions-cmakelists-txt-include-maketable-cmake">
+<div class="code-block-caption"><span class="caption-text">MathFunctions/CMakeLists.txt</span><a class="headerlink" href="#mathfunctions-cmakelists-txt-include-maketable-cmake" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nf">include(</span><span class="nb">MakeTable.cmake</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+<p>现在我们使用已生成的表。首先，修改<code class="docutils literal notranslate"><span class="pre">mysqrt.cxx</span></code>以引用<code class="docutils literal notranslate"><span class="pre">Table.h</span></code>。接着，我们重构<code class="docutils literal notranslate"><span class="pre">mysqrt</span></code>函数使用这个表：</p>
+<div class="literal-block-wrapper docutils container" id="mathfunctions-mysqrt-cxx">
+<div class="code-block-caption"><span class="caption-text">MathFunctions/mysqrt.cxx</span><a class="headerlink" href="#mathfunctions-mysqrt-cxx" title="Link to this code">¶</a></div>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">double</span><span class="w"> </span><span class="nf">mysqrt</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">x</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// 使用表格帮助查找初始值</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">10</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Use the table to help find an initial value &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqrtTable</span><span class="p">[</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">x</span><span class="p">)];</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// 迭代十次</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">result</span><span class="p">);</span>
+<span class="w">    </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">delta</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Computing sqrt of &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; to be &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<p>运行<span class="target" id="index-0-manual:cmake(1)"></span><a class="reference internal" href="../../manual/cmake.1.html#manual:cmake(1)" title="cmake(1)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">cmake</span></code></a>或者<span class="target" id="index-0-manual:cmake-gui(1)"></span><a class="reference internal" href="../../manual/cmake-gui.1.html#manual:cmake-gui(1)" title="cmake-gui(1)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">cmake-gui</span></code></a>来配置并构建此项目。</p>
+<p>当程序构建时会先构建<code class="docutils literal notranslate"><span class="pre">MakeTable</span></code>程序。它会运行<code class="docutils literal notranslate"><span class="pre">MakeTable</span></code>产生<code class="docutils literal notranslate"><span class="pre">Table.h</span></code>。最终，它会编译包括<code class="docutils literal notranslate"><span class="pre">Table.h</span></code>的<code class="docutils literal notranslate"><span class="pre">mysqrt.cxx</span></code>以产生<code class="docutils literal notranslate"><span class="pre">MathFunctions</span></code>库。</p>
+<p>运行Tutorial程序以验证是否产生使用了这个表。</p>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h4>上一主题</h4>
+    <p class="topless"><a href="Adding%20System%20Introspection.html"
+                          title="上一章">步骤7: 添加系统自省</a></p>
+  </div>
+  <div>
+    <h4>下一主题</h4>
+    <p class="topless"><a href="Packaging%20an%20Installer.html"
+                          title="下一章">步骤9: 打包一个安装包</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>本页</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/guide/tutorial/Adding a Custom Command and Generated File.rst.txt"
+            rel="nofollow">显示源代码</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">快速搜索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="提交" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="Packaging%20an%20Installer.html" title="步骤9: 打包一个安装包"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="Adding%20System%20Introspection.html" title="步骤7: 添加系统自省"
+             >上一页</a> |</li>
+  <li>
+    <img src="../../_static/cmake-logo-16.png" alt=""
+         style="vertical-align: middle; margin-top: -2px" />
+  </li>
+  <li>
+    <a href="https://cmake.org/">CMake</a> &#187;
+  </li>
+  <li>
+    <a href="../../index.html">3.29.1-g21d0c57 Documentation</a> &#187;
+  </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >CMake教程</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">步骤8: 添加自定义命令和生成文件</a></li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+    &#169; 版权所有 2000-2024 Kitware, Inc. and Contributors.
+      由 <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6创建。
+    </div>
+  </body>
+</html>

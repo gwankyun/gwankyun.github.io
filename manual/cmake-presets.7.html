@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>cmake-presets(7) &mdash; CMake 3.29.1-g21d0c57 Documentation</title>
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a2c47e09" />
+    <link rel="stylesheet" type="text/css" href="../_static/cmake.css?v=3e562cf9" />
+    
+    <script src="../_static/documentation_options.js?v=17f7ec5f"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=beaddf03"></script>
+    
+    <link rel="icon" href="../_static/cmake-favicon.ico"/>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="cmake-properties(7)" href="cmake-properties.7.html" />
+    <link rel="prev" title="CMP0000" href="../policy/CMP0000.html" />
+ 
+
+  </head><body>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="总索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="cmake-properties.7.html" title="cmake-properties(7)"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="../policy/CMP0000.html" title="CMP0000"
+             accesskey="P">上一页</a> |</li>
+  <li>
+    <img src="../_static/cmake-logo-16.png" alt=""
+         style="vertical-align: middle; margin-top: -2px" />
+  </li>
+  <li>
+    <a href="https://cmake.org/">CMake</a> &#187;
+  </li>
+  <li>
+    <a href="../index.html">3.29.1-g21d0c57 Documentation</a> &#187;
+  </li>
+
+        <li class="nav-item nav-item-this"><a href="">cmake-presets(7)</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <span class="target" id="manual:cmake-presets(7)"></span><section id="cmake-presets-7">
+<h1><a class="toc-backref" href="#id13" role="doc-backlink">cmake-presets(7)</a><a class="headerlink" href="#cmake-presets-7" title="Link to this heading">¶</a></h1>
+<nav class="contents" id="id1">
+<p class="topic-title">目录</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#cmake-presets-7" id="id13">cmake-presets(7)</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id2" id="id14">引言</a></p></li>
+<li><p><a class="reference internal" href="#id3" id="id15">格式</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id4" id="id16">包含</a></p></li>
+<li><p><a class="reference internal" href="#id5" id="id17">配置预设</a></p></li>
+<li><p><a class="reference internal" href="#id6" id="id18">构建预设</a></p></li>
+<li><p><a class="reference internal" href="#id7" id="id19">测试预设</a></p></li>
+<li><p><a class="reference internal" href="#id8" id="id20">包预设</a></p></li>
+<li><p><a class="reference internal" href="#workflow-preset" id="id21">工作流预设</a></p></li>
+<li><p><a class="reference internal" href="#id10" id="id22">条件</a></p></li>
+<li><p><a class="reference internal" href="#id11" id="id23">宏扩展</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id12" id="id24">模式</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<section id="id2">
+<h2><a class="toc-backref" href="#id14" role="doc-backlink">引言</a><a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified added">在 3.19 版本加入.</span></p>
+</div>
+<p>CMake用户经常面临的一个问题是与其他人共享配置项目的常用方法。这样做可能是为了支持CI构建，或者是为了经常使用相同构建的用户。CMake支持两个主要文件，<code class="docutils literal notranslate"><span class="pre">CMakePresets.json</span></code>和<code class="docutils literal notranslate"><span class="pre">CMakeUserPresets.json</span></code>，它们允许用户指定通用的配置选项并与他人共享。CMake也支持包含在<code class="docutils literal notranslate"><span class="pre">include</span></code>字段中的文件。</p>
+<p><code class="docutils literal notranslate"><span class="pre">CMakePresets.json</span></code>和<code class="docutils literal notranslate"><span class="pre">CMakeUserPresets.json</span></code>存在于项目的根目录中。它们都具有完全相同的格式，并且都是可选的（尽管如果指定了<a class="reference internal" href="cmake.1.html#cmdoption-cmake-preset"><code class="xref std std-option docutils literal notranslate"><span class="pre">--preset</span></code></a>，则必须至少存在一个）。<code class="docutils literal notranslate"><span class="pre">CMakePresets.json</span></code>旨在指定项目范围内的构建细节，而<code class="docutils literal notranslate"><span class="pre">CMakeUserPresets.json</span></code>旨在让开发人员指定他们自己的本地构建细节。</p>
+<p><code class="docutils literal notranslate"><span class="pre">CMakePresets.json</span></code>可能会被签入版本控制系统，而<code class="docutils literal notranslate"><span class="pre">CMakeUserPresets.json</span></code>则不应被签入。例如，如果一个项目正在使用Git, <code class="docutils literal notranslate"><span class="pre">CMakePresets.json</span></code>可能会被跟踪，<code class="docutils literal notranslate"><span class="pre">CMakeUserPresets.json</span></code>应该被添加到<code class="docutils literal notranslate"><span class="pre">.gitignore</span></code>中。</p>
+</section>
+<section id="id3">
+<h2><a class="toc-backref" href="#id15" role="doc-backlink">格式</a><a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
+<p>这些文件是一个JSON文档，以一个对象作为根：</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;cmakeMinimumRequired&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;major&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;minor&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">23</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;patch&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;include&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;otherThings.json&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;moreThings.json&quot;</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;configurePresets&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;displayName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Default Config&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Default build using Ninja generator&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;generator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ninja&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;binaryDir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;${sourceDir}/build/default&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;cacheVariables&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;FIRST_CACHE_VARIABLE&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;BOOL&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;OFF&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;SECOND_CACHE_VARIABLE&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ON&quot;</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;environment&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;MY_ENVIRONMENT_VARIABLE&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Test&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;PATH&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;$env{HOME}/ninja/bin:$penv{PATH}&quot;</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;vendor&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;example.com/ExampleIDE/1.0&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;autoFormat&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ninja-multi&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;inherits&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;displayName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ninja Multi-Config&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Default build using Ninja Multi-Config generator&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;generator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ninja Multi-Config&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;windows-only&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;inherits&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;displayName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Windows-only configuration&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;This build is only available on Windows&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;condition&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;equals&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;lhs&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;${hostSystemName}&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;rhs&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Windows&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;buildPresets&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;configurePreset&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;default&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;testPresets&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;configurePreset&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;output&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;outputOnFailure&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;execution&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;noTestsAction&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;error&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;stopOnFailure&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;packagePresets&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;configurePreset&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;generators&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;TGZ&quot;</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;workflowPresets&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;steps&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;configure&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;default&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;build&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;default&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;test&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;default&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;package&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;default&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;vendor&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;example.com/ExampleIDE/1.0&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;autoFormat&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>根对象识别以下字段：</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">$schema</span></code></dt><dd><p>一个可选字符串，它向描述该JSON文档结构的JSON模式提供一个URI。该字段用于在支持JSON模式的编辑器中进行验证和自动完成。它不会影响文档本身的行为。如果没有指定这个字段，JSON文档仍然有效，但是使用JSON模式进行验证和自动完成的工具可能无法正常工作。这在指定版本<code class="docutils literal notranslate"><span class="pre">8</span></code>或以上的预设文件中是允许的。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">version</span></code></dt><dd><p>必需的整数，表示JSON模式的版本。支持的版本有：</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">1</span></code></dt><dd><div class="versionadded">
+<p><span class="versionmodified added">在 3.19 版本加入.</span></p>
+</div>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">2</span></code></dt><dd><div class="versionadded">
+<p><span class="versionmodified added">在 3.20 版本加入.</span></p>
+</div>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">3</span></code></dt><dd><div class="versionadded">
+<p><span class="versionmodified added">在 3.21 版本加入.</span></p>
+</div>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">4</span></code></dt><dd><div class="versionadded">
+<p><span class="versionmodified added">在 3.23 版本加入.</span></p>
+</div>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">5</span></code></dt><dd><div class="versionadded">
+<p><span class="versionmodified added">在 3.24 版本加入.</span></p>
+</div>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">6</span></code></dt><dd><div class="versionadded">
+<p><span class="versionmodified added">在 3.25 版本加入.</span></p>
+</div>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">7</span></code></dt><dd><div class="versionadded">
+<p><span class="versionmodified added">在 3.27 版本加入.</span></p>
+</div>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">8</span></code></dt><dd><div class="versionadded">
+<p><span class="versionmodified added">在 3.28 版本加入.</span></p>
+</div>
+</dd>
+</dl>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">cmakeMinimumRequired</span></code></dt><dd><p>一个可选对象，表示构建此项目所需的CMake的最小版本。该节点由以下字段组成：</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">major</span></code></dt><dd><p>一个可选的整数，表示主版本。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">minor</span></code></dt><dd><p>一个可选的整数，表示次版本。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">patch</span></code></dt><dd><p>一个可选的整数，表示补丁版本。</p>
+</dd>
+</dl>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">include</span></code></dt><dd><p>表示要包含的文件的可选字符串数组。如果文件名不是绝对的，则认为它们是相对于当前文件的。这在指定版本<code class="docutils literal notranslate"><span class="pre">4</span></code>或以上的预设文件中是允许的。有关所包含文件的约束的讨论，请参阅<a class="reference internal" href="#id4">包含</a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">vendor</span></code></dt><dd><p>一个可选的映射，包含特定于供应商的信息。CMake不会解释这个字段的内容，除非验证它是否存在。但是，密钥应该是特定于供应商的域名，后跟以<code class="docutils literal notranslate"><span class="pre">/</span></code>分隔的路径。例如，示例IDE 1.0可以使用<code class="docutils literal notranslate"><span class="pre">example.com/ExampleIDE/1.0</span></code>。每个字段的值可以是供应商想要的任何值，但通常是一个映射。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">configurePresets</span></code></dt><dd><p><a class="reference internal" href="#id5">配置预设</a>对象的可选数组。
+在指定版本<code class="docutils literal notranslate"><span class="pre">1</span></code>或更高版本的预设文件中允许这样做。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">buildPresets</span></code></dt><dd><p><a class="reference internal" href="#id6">构建预设</a>对象的可选数组。
+在指定版本<code class="docutils literal notranslate"><span class="pre">2</span></code>或更高版本的预设文件中允许这样做。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">testPresets</span></code></dt><dd><p><a class="reference internal" href="#id7">测试预设</a>对象的可选数组。
+在指定版本<code class="docutils literal notranslate"><span class="pre">2</span></code>或更高版本的预设文件中允许这样做。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">packagePresets</span></code></dt><dd><p><a class="reference internal" href="#id8">包预设</a>对象的可选数组。
+在指定版本<code class="docutils literal notranslate"><span class="pre">6</span></code>或更高版本的预设文件中允许这样做。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">workflowPresets</span></code></dt><dd><p><a class="reference internal" href="#id9">工作流预设</a>对象的可选数组。
+在指定版本<code class="docutils literal notranslate"><span class="pre">6</span></code>或更高版本的预设文件中允许这样做。</p>
+</dd>
+</dl>
+<section id="id4">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">包含</a><a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">CMakePresets.json</span></code>和<code class="docutils literal notranslate"><span class="pre">CMakeUserPresets.json</span></code>可以在文件版本<code class="docutils literal notranslate"><span class="pre">4</span></code>及以后包含<code class="docutils literal notranslate"><span class="pre">include</span></code>字段的其他文件。这些文件包含的文件还可以包含其他文件。如果<code class="docutils literal notranslate"><span class="pre">CMakePresets.json</span></code>和<code class="docutils literal notranslate"><span class="pre">CMakeUserPresets.json</span></code>都存在，<code class="docutils literal notranslate"><span class="pre">CMakeUserPresets.json</span></code>隐式包含<code class="docutils literal notranslate"><span class="pre">CMakePresets.json</span></code>，即使没有<code class="docutils literal notranslate"><span class="pre">include</span></code>字段，在所有版本的格式。</p>
+<p>如果一个预置文件包含从另一个文件中的预置继承的预置，则该文件必须直接或间接地包含另一个文件。文件之间不允许包含循环。如果<code class="docutils literal notranslate"><span class="pre">a.json</span></code>包含<code class="docutils literal notranslate"><span class="pre">b.json</span></code>，<code class="docutils literal notranslate"><span class="pre">b.json</span></code>不能包含<code class="docutils literal notranslate"><span class="pre">a.json</span></code>。但是，一个文件可能会从同一个文件或不同的文件中被包含多次。</p>
+<p><code class="docutils literal notranslate"><span class="pre">CMakePresets.json</span></code>中直接或间接包含的文件应保证由项目提供。<code class="docutils literal notranslate"><span class="pre">CMakeUserPresets.json</span></code>可以包含来自任何地方的文件。</p>
+<p>从版本<code class="docutils literal notranslate"><span class="pre">7</span></code>开始，<code class="docutils literal notranslate"><span class="pre">include</span></code>字段支持<a class="reference internal" href="#id11">宏扩展</a>，但只支持<code class="docutils literal notranslate"><span class="pre">$penv{}</span></code>宏扩展。</p>
+</section>
+<section id="id5">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">配置预设</a><a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">configurePresets</span></code>数组的每个条目都是一个JSON对象，可能包含以下字段：</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">name</span></code></dt><dd><p>必需的字符串，表示预设的机器友好的名称。这个标识符在<a class="reference internal" href="cmake.1.html#cmake-options"><span class="std std-ref">cmake --preset</span></a>选项中使用。<code class="docutils literal notranslate"><span class="pre">CMakePresets.json</span></code>和<code class="docutils literal notranslate"><span class="pre">CMakeUserPresets.json</span></code>的联合目录下，不能有两个同名的配置预置。但是，配置预设可能与构建、测试、包或工作流预设具有相同的名称。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">hidden</span></code></dt><dd><p>一个可选的布尔值，指定是否应该隐藏预设。如果预设是隐藏的，它不能在<code class="docutils literal notranslate"><span class="pre">--preset=</span></code>参数中使用，不会显示在<span class="target" id="index-0-manual:cmake-gui(1)"></span><a class="reference internal" href="cmake-gui.1.html#manual:cmake-gui(1)" title="cmake-gui(1)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">CMake</span> <span class="pre">GUI</span></code></a>中，并且不必有一个有效的<code class="docutils literal notranslate"><span class="pre">generator</span></code>或<code class="docutils literal notranslate"><span class="pre">binaryDir</span></code>，即使是从继承。<code class="docutils literal notranslate"><span class="pre">hidden</span></code>预设被用作其他预设通过<code class="docutils literal notranslate"><span class="pre">inherits</span></code>字段继承的基础。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">inherits</span></code></dt><dd><p>一个可选的字符串数组，表示要继承的预设的名称。该字段也可以是字符串，相当于包含一个字符串的数组。</p>
+<p>默认情况下，预设将继承<code class="docutils literal notranslate"><span class="pre">inherits</span></code>预设中的所有字段（除了<code class="docutils literal notranslate"><span class="pre">name</span></code>、<code class="docutils literal notranslate"><span class="pre">hidden</span></code>、<code class="docutils literal notranslate"><span class="pre">inherits</span></code>、<code class="docutils literal notranslate"><span class="pre">description</span></code>和<code class="docutils literal notranslate"><span class="pre">displayName</span></code>），但是可以根据需要覆盖它们。如果多个<code class="docutils literal notranslate"><span class="pre">inherits</span></code>预设为同一字段提供冲突的值，则优先选择<code class="docutils literal notranslate"><span class="pre">inherits</span></code>数组中较早的预设。</p>
+<p>预设只能从定义在同一文件或其包含的其中一个文件中的另一个预设继承（直接或间接）。<code class="docutils literal notranslate"><span class="pre">CMakePresets.json</span></code>中的预置不能继承<code class="docutils literal notranslate"><span class="pre">CMakeUserPresets.json</span></code>中的预置。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">condition</span></code></dt><dd><p>一个可选的<a class="reference internal" href="#id10">条件</a>对象。这在指定版本<code class="docutils literal notranslate"><span class="pre">3</span></code>或以上的预设文件中是允许的。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">vendor</span></code></dt><dd><p>一个可选的映射，包含特定于供应商的信息。CMake不会解释这个字段的内容，除非验证它是否存在。但是，它应该遵循与根级<code class="docutils literal notranslate"><span class="pre">vendor</span></code>字段相同的约定。如果供应商使用他们自己预置的<code class="docutils literal notranslate"><span class="pre">vendor</span></code>字段，他们应该在适当的时候以合理的方式实现继承。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">displayName</span></code></dt><dd><p>一个可选字符串，具有预设的人性化名称。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">description</span></code></dt><dd><p>一个可选的字符串，具有对预设的人性化描述。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">generator</span></code></dt><dd><p>一个可选字符串，表示要用于预设的生成器。如果未指定<code class="docutils literal notranslate"><span class="pre">generator</span></code>，则必须从所<code class="docutils literal notranslate"><span class="pre">inherits</span></code>的预设继承（除非该预设是<code class="docutils literal notranslate"><span class="pre">hidden</span></code>）。在版本<code class="docutils literal notranslate"><span class="pre">3</span></code>或更高版本中，可以省略此字段以返回到常规生成器发现过程。</p>
+<p>请注意，对于Visual Studio生成器，与命令行<a class="reference internal" href="cmake.1.html#cmdoption-cmake-G"><code class="xref std std-option docutils literal notranslate"><span class="pre">-G</span></code></a>参数不同，你不能在生成器名称中包含平台名称。请使用<code class="docutils literal notranslate"><span class="pre">architecture</span></code>字段。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">architecture</span></code>, <code class="docutils literal notranslate"><span class="pre">toolset</span></code></dt><dd><p>可选字段，分别表示支持它们的<span class="target" id="index-0-manual:cmake-generators(7)"></span><a class="reference internal" href="cmake-generators.7.html#manual:cmake-generators(7)" title="cmake-generators(7)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">generators</span></code></a>的平台和工具集。</p>
+<p>请参阅<a class="reference internal" href="cmake.1.html#cmdoption-cmake-A"><code class="xref std std-option docutils literal notranslate"><span class="pre">cmake</span> <span class="pre">-A</span></code></a>选项了解<code class="docutils literal notranslate"><span class="pre">architecture</span></code>的可能值，并参阅<a class="reference internal" href="cmake.1.html#cmdoption-cmake-T"><code class="xref std std-option docutils literal notranslate"><span class="pre">cmake</span> <span class="pre">-T</span></code></a>了解<code class="docutils literal notranslate"><span class="pre">toolset</span></code>。</p>
+<p>每个字段都可以是字符串或具有以下字段的对象：</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">value</span></code></dt><dd><p>表示值的可选字符串。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">strategy</span></code></dt><dd><p>一个可选的字符串，告诉CMake如何处理<code class="docutils literal notranslate"><span class="pre">architecture</span></code>或<code class="docutils literal notranslate"><span class="pre">toolset</span></code>字段。有效值为：</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">&quot;set&quot;</span></code></dt><dd><p>设置各自的值。这将导致不支持相应字段的生成器出现错误。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">&quot;external&quot;</span></code></dt><dd><p>即使生成器支持该值，也不要设置该值。例如，如果预设使用Ninja生成器，并且IDE知道如何从<code class="docutils literal notranslate"><span class="pre">architecture</span></code>和<code class="docutils literal notranslate"><span class="pre">toolset</span></code>字段设置Visual C++环境，则这很有用。在这种情况下，CMake将忽略该字段，但IDE可以在调用CMake之前使用它们来设置环境。</p>
+</dd>
+</dl>
+<p>如果没有给出<code class="docutils literal notranslate"><span class="pre">strategy</span></code>字段，或者该字段使用字符串形式而不是对象形式，则行为与<code class="docutils literal notranslate"><span class="pre">&quot;set&quot;</span></code>相同。</p>
+</dd>
+</dl>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">toolchainFile</span></code></dt><dd><p>表示工具链文件路径的可选字符串。该字段支持<a class="reference internal" href="#id11">宏扩展</a>。如果指定了相对路径，则计算相对于构建目录的路径，如果没有找到，则计算相对于源目录的路径。该字段优先于<span class="target" id="index-0-variable:CMAKE_TOOLCHAIN_FILE"></span><a class="reference internal" href="../variable/CMAKE_TOOLCHAIN_FILE.html#variable:CMAKE_TOOLCHAIN_FILE" title="CMAKE_TOOLCHAIN_FILE"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_TOOLCHAIN_FILE</span></code></a>的任何值。在指定版本<code class="docutils literal notranslate"><span class="pre">3</span></code>或更高版本的预设文件中允许使用。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">binaryDir</span></code></dt><dd><p>一个可选字符串，表示输出二进制目录的路径。该字段支持<a class="reference internal" href="#id11">宏扩展</a>.。如果指定了相对路径，则计算相对于源目录的路径。如果未指定<code class="docutils literal notranslate"><span class="pre">binaryDir</span></code>，则必须从<code class="docutils literal notranslate"><span class="pre">inherits</span></code>预设继承（除非该预设是<code class="docutils literal notranslate"><span class="pre">hidden</span></code>）。在版本<code class="docutils literal notranslate"><span class="pre">3</span></code>或更高版本中，此字段可能被省略。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">installDir</span></code></dt><dd><p>表示安装目录路径的可选字符串。该字段支持<a class="reference internal" href="#id11">宏扩展</a>。如果指定了相对路径，则计算相对于源目录的路径。这在指定版本<code class="docutils literal notranslate"><span class="pre">3</span></code>或以上的预设文件中是允许的。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">cmakeExecutable</span></code></dt><dd><p>一个可选的字符串，表示用于此预设的CMake可执行文件的路径。这是保留给IDE使用的，而不是由CMake本身使用。使用该字段的IDE应该展开其中的任何宏。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">cacheVariables</span></code></dt><dd><p>缓存变量的可选映射。关键字是变量名（可能不是空字符串），值要么为<code class="docutils literal notranslate"><span class="pre">null</span></code>，要么为布尔值（相当于<code class="docutils literal notranslate"><span class="pre">&quot;TRUE&quot;</span></code>或<code class="docutils literal notranslate"><span class="pre">&quot;FALSE&quot;</span></code>的值和<code class="docutils literal notranslate"><span class="pre">BOOL</span></code>类型），要么为表示变量值的字符串（支持<a class="reference internal" href="#id11">宏扩展</a>），要么为具有以下字段的对象：</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">type</span></code></dt><dd><p>表示变量类型的可选字符串。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">value</span></code></dt><dd><p>表示变量值的必需字符串或布尔值。布尔值相当于<code class="docutils literal notranslate"><span class="pre">&quot;TRUE&quot;</span></code>或<code class="docutils literal notranslate"><span class="pre">&quot;FALSE&quot;</span></code>。该字段支持<a class="reference internal" href="#id11">宏扩展</a>。</p>
+</dd>
+</dl>
+<p>缓存变量通过<code class="docutils literal notranslate"><span class="pre">inherits</span></code>字段继承，预设的变量将是它自己的<code class="docutils literal notranslate"><span class="pre">cacheVariables</span></code>和它所有父变量的<code class="docutils literal notranslate"><span class="pre">cacheVariables</span></code>的联合。如果此联合中的多个预设定义了相同的变量，则应用<code class="docutils literal notranslate"><span class="pre">inherits</span></code>的标准规则。将变量设置为<code class="docutils literal notranslate"><span class="pre">null</span></code>将导致不设置该变量，即使该值是从另一个预设继承的。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">environment</span></code></dt><dd><p>环境变量的可选映射。关键字是变量名（可能不是空字符串），值要么为<code class="docutils literal notranslate"><span class="pre">null</span></code>，要么为表示变量值的字符串。无论进程的环境是否给每个变量赋值，都会设置它。该字段支持<a class="reference internal" href="#id11">宏扩展</a>，并且该映射中的环境变量可以相互引用，并且可以以任何顺序列出，只要这些引用不引起循环（例如，如果<code class="docutils literal notranslate"><span class="pre">ENV_1</span></code>是<code class="docutils literal notranslate"><span class="pre">$env{ENV_2}</span></code>，则<code class="docutils literal notranslate"><span class="pre">ENV_2</span></code>不可是<code class="docutils literal notranslate"><span class="pre">$env{ENV_1}</span></code>）。</p>
+<p>环境变量通过<code class="docutils literal notranslate"><span class="pre">inherits</span></code>字段继承，预设的环境将是它自己的<code class="docutils literal notranslate"><span class="pre">environment</span></code>和来自所有父<code class="docutils literal notranslate"><span class="pre">environment</span></code>的环境的结合。如果此联合中的多个预设定义了相同的变量，则应用<code class="docutils literal notranslate"><span class="pre">inherits</span></code>的标准规则。将变量设置为<code class="docutils literal notranslate"><span class="pre">null</span></code>将导致不设置该变量，即使该值是从另一个预设继承的。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">warnings</span></code></dt><dd><p>一个可选对象，指定要启用的警告。该对象可以包含以下字段：</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">dev</span></code></dt><dd><p>可选的布尔值。相当于在命令行上传递<a class="reference internal" href="cmake.1.html#cmdoption-cmake-Wdev"><code class="xref std std-option docutils literal notranslate"><span class="pre">-Wdev</span></code></a>或<a class="reference internal" href="cmake.1.html#cmdoption-cmake-Wno-dev"><code class="xref std std-option docutils literal notranslate"><span class="pre">-Wno-dev</span></code></a> 。如果<code class="docutils literal notranslate"><span class="pre">errors.dev</span></code>被设置为<code class="docutils literal notranslate"><span class="pre">true</span></code>，这个值可能不会被设置为<code class="docutils literal notranslate"><span class="pre">false</span></code>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">deprecated</span></code></dt><dd><p>可选的布尔值。相当于在命令行上传递<a class="reference internal" href="cmake.1.html#cmdoption-cmake-Wdeprecated"><code class="xref std std-option docutils literal notranslate"><span class="pre">-Wdeprecated</span></code></a>或<a class="reference internal" href="cmake.1.html#cmdoption-cmake-Wno-deprecated"><code class="xref std std-option docutils literal notranslate"><span class="pre">-Wno-deprecated</span></code></a>。如果<code class="docutils literal notranslate"><span class="pre">errors.deprecated</span></code>被设置为<code class="docutils literal notranslate"><span class="pre">true</span></code>，则该值可能不会被设置为<code class="docutils literal notranslate"><span class="pre">false</span></code>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">uninitialized</span></code></dt><dd><p>可选的布尔值。将其设置为<code class="docutils literal notranslate"><span class="pre">true</span></code>相当于在命令行上传递<a class="reference internal" href="cmake.1.html#cmdoption-cmake-warn-uninitialized"><code class="xref std std-option docutils literal notranslate"><span class="pre">--warn-uninitialized</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">unusedCli</span></code></dt><dd><p>可选的布尔值。将其设置为<code class="docutils literal notranslate"><span class="pre">false</span></code>相当于在命令行上传递<a class="reference internal" href="cmake.1.html#cmdoption-cmake-no-warn-unused-cli"><code class="xref std std-option docutils literal notranslate"><span class="pre">--no-warn-unused-cli</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">systemVars</span></code></dt><dd><p>可选的布尔值。将其设置为<code class="docutils literal notranslate"><span class="pre">true</span></code>相当于在命令行上传递<a class="reference internal" href="cmake.1.html#cmdoption-cmake-check-system-vars"><code class="xref std std-option docutils literal notranslate"><span class="pre">--check-system-vars</span></code></a>。</p>
+</dd>
+</dl>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">errors</span></code></dt><dd><p>一个可选对象，指定要启用的错误。该对象可以包含以下字段：</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">dev</span></code></dt><dd><p>可选的布尔值。相当于在命令行上传递<a class="reference internal" href="cmake.1.html#cmdoption-cmake-Werror"><code class="xref std std-option docutils literal notranslate"><span class="pre">-Werror=dev</span></code></a>或<a class="reference internal" href="cmake.1.html#cmdoption-cmake-Werror"><code class="xref std std-option docutils literal notranslate"><span class="pre">-Wno-error=dev</span></code></a>。如果<code class="docutils literal notranslate"><span class="pre">warnings.dev</span></code>设置为<code class="docutils literal notranslate"><span class="pre">false</span></code>，则可能不会将其设置为<code class="docutils literal notranslate"><span class="pre">true</span></code>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">deprecated</span></code></dt><dd><p>可选的布尔值。相当于在命令行上传递<a class="reference internal" href="cmake.1.html#cmdoption-cmake-Werror"><code class="xref std std-option docutils literal notranslate"><span class="pre">-Werror=deprecated</span></code></a>或<a class="reference internal" href="cmake.1.html#cmdoption-cmake-Werror"><code class="xref std std-option docutils literal notranslate"><span class="pre">-Wno-error=deprecated</span></code></a>。如果<code class="docutils literal notranslate"><span class="pre">warnings.deprecated</span></code>设置为<code class="docutils literal notranslate"><span class="pre">false</span></code>，则可能不会将其设置为<code class="docutils literal notranslate"><span class="pre">true</span></code>。</p>
+</dd>
+</dl>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">debug</span></code></dt><dd><p>指定调试选项的可选对象。该对象可以包含以下字段：</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">output</span></code></dt><dd><p>可选的布尔值。将其设置为<code class="docutils literal notranslate"><span class="pre">true</span></code>相当于在命令行上传递<a class="reference internal" href="cmake.1.html#cmdoption-cmake-debug-output"><code class="xref std std-option docutils literal notranslate"><span class="pre">--debug-output</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">tryCompile</span></code></dt><dd><p>可选的布尔值。将其设置为<code class="docutils literal notranslate"><span class="pre">true</span></code>相当于在命令行上传递<a class="reference internal" href="cmake.1.html#cmdoption-cmake-debug-trycompile"><code class="xref std std-option docutils literal notranslate"><span class="pre">--debug-trycompile</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">find</span></code></dt><dd><p>可选的布尔值。将其设置为<code class="docutils literal notranslate"><span class="pre">true</span></code>相当于在命令行上传递<a class="reference internal" href="cmake.1.html#cmdoption-cmake-debug-find"><code class="xref std std-option docutils literal notranslate"><span class="pre">--debug-find</span></code></a>。</p>
+</dd>
+</dl>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">trace</span></code></dt><dd><p>指定跟踪选项的可选对象。这在指定版本<code class="docutils literal notranslate"><span class="pre">7</span></code>的预设文件中是允许的。该对象可以包含以下字段：</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">mode</span></code></dt><dd><p>指定跟踪模式的可选字符串。有效值为：</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">on</span></code></dt><dd><p>导致所有调用的跟踪，以及从哪里打印。相当于在命令行上传递<a class="reference internal" href="cmake.1.html#cmdoption-cmake-trace"><code class="xref std std-option docutils literal notranslate"><span class="pre">--trace</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">off</span></code></dt><dd><p>不会打印所有调用的跟踪。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">expand</span></code></dt><dd><p>使用展开的所有调用的变量和要从何处打印的变量进行跟踪。相当于在命令行上传递<a class="reference internal" href="cmake.1.html#cmdoption-cmake-trace-expand"><code class="xref std std-option docutils literal notranslate"><span class="pre">--trace-expand</span></code></a>。</p>
+</dd>
+</dl>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">format</span></code></dt><dd><p>指定跟踪的格式输出的可选字符串。有效值为：</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">human</span></code></dt><dd><p>以人类可读的格式打印每个跟踪行。这是默认格式。相当于在命令行上传递<a class="reference internal" href="cmake.1.html#cmdoption-cmake-trace-format"><code class="xref std std-option docutils literal notranslate"><span class="pre">--trace-format=human</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">json-v1</span></code></dt><dd><p>将每行打印为单独的JSON文档。相当于在命令行上传递<a class="reference internal" href="cmake.1.html#cmdoption-cmake-trace-format"><code class="xref std std-option docutils literal notranslate"><span class="pre">--trace-format=json-v1</span></code></a>。</p>
+</dd>
+</dl>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">source</span></code></dt><dd><p>表示要跟踪的源文件路径的可选字符串数组。该字段也可以是字符串，相当于包含一个字符串的数组。相当于在命令行上传递<a class="reference internal" href="cmake.1.html#cmdoption-cmake-trace-source"><code class="xref std std-option docutils literal notranslate"><span class="pre">--trace-source</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">redirect</span></code></dt><dd><p>指定跟踪输出文件路径的可选字符串。相当于在命令行上传递<a class="reference internal" href="cmake.1.html#cmdoption-cmake-trace-redirect"><code class="xref std std-option docutils literal notranslate"><span class="pre">--trace-redirect</span></code></a>。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+<section id="id6">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">构建预设</a><a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">buildPresets</span></code>数组的每个条目都是一个JSON对象，可能包含以下字段：</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">name</span></code></dt><dd><p>必需的字符串，表示预设的机器友好的名称。这个标识符在<a class="reference internal" href="cmake.1.html#build-tool-mode"><span class="std std-ref">cmake --build --preset</span></a>选项中使用。在<code class="docutils literal notranslate"><span class="pre">CMakePresets.json</span></code>和<code class="docutils literal notranslate"><span class="pre">CMakeUserPresets.json</span></code>的联合目录中，不能有两个构建预置，且名称相同。但是，构建预设可能与配置、测试、打包或工作流预设具有相同的名称。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">hidden</span></code></dt><dd><p>一个可选的布尔值，指定是否应该隐藏预设。如果一个预设是隐藏的，那么它就不能在<a class="reference internal" href="cmake.1.html#cmdoption-cmake-preset"><code class="xref std std-option docutils literal notranslate"><span class="pre">--preset</span></code></a>参数中使用，也不必有一个有效的<code class="docutils literal notranslate"><span class="pre">configurePreset</span></code>，即使是从继承中也是如此。<code class="docutils literal notranslate"><span class="pre">hidden</span></code>预设被用作其他预设通过<code class="docutils literal notranslate"><span class="pre">inherits</span></code>字段继承的基础。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">inherits</span></code></dt><dd><p>一个可选的字符串数组，表示要继承的预设的名称。该字段也可以是字符串，相当于包含一个字符串的数组。</p>
+<p>默认情况下，预设将继承<code class="docutils literal notranslate"><span class="pre">inherits</span></code>预设中的所有字段（除了<code class="docutils literal notranslate"><span class="pre">name</span></code>、<code class="docutils literal notranslate"><span class="pre">hidden</span></code>、<code class="docutils literal notranslate"><span class="pre">inherits</span></code>、<code class="docutils literal notranslate"><span class="pre">description</span></code>和<code class="docutils literal notranslate"><span class="pre">displayName</span></code>），但是可以根据需要覆盖它们。如果多个<code class="docutils literal notranslate"><span class="pre">inherits</span></code>预设为同一字段提供冲突的值，则优先选择<code class="docutils literal notranslate"><span class="pre">inherits</span></code>数组中较早的预设。</p>
+<p>预设只能从定义在同一文件或其包含的其中一个文件中的另一个预设继承（直接或间接）。<code class="docutils literal notranslate"><span class="pre">CMakePresets.json</span></code>中的预置不能继承<code class="docutils literal notranslate"><span class="pre">CMakeUserPresets.json</span></code>中的预置。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">condition</span></code></dt><dd><p>可选的<a class="reference internal" href="#id10">条件</a>对象。这在指定版本<code class="docutils literal notranslate"><span class="pre">3</span></code>或以上的预设文件中是允许的。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">vendor</span></code></dt><dd><p>一个可选的映射，包含特定于供应商的信息。CMake不会解释这个字段的内容，除非验证它是否存在。但是，它应该遵循与根级<code class="docutils literal notranslate"><span class="pre">vendor</span></code>字段相同的约定。如果供应商使用他们自己预置的<code class="docutils literal notranslate"><span class="pre">vendor</span></code>字段，他们应该在适当的时候以合理的方式实现继承。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">displayName</span></code></dt><dd><p>一个可选字符串，具有预设的人性化名称。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">description</span></code></dt><dd><p>一个可选的字符串，具有对预设的人性化描述。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">environment</span></code></dt><dd><p>环境变量的可选映射。关键字是变量名（可能不是空字符串），值要么为<code class="docutils literal notranslate"><span class="pre">null</span></code>，要么为表示变量值的字符串。无论进程的环境是否给每个变量赋值，都会设置它。该字段支持宏扩展，并且该映射中的环境变量可以相互引用，并且可以以任何顺序列出，只要这些引用不引起循环（例如，如果<code class="docutils literal notranslate"><span class="pre">ENV_1</span></code>是<code class="docutils literal notranslate"><span class="pre">$env{ENV_2}</span></code>，则<code class="docutils literal notranslate"><span class="pre">ENV_2</span></code>不能是<code class="docutils literal notranslate"><span class="pre">$env{ENV_1}</span></code>）。</p>
+<p>环境变量通过<code class="docutils literal notranslate"><span class="pre">inherits</span></code>字段继承，预设的环境将是它自己的<code class="docutils literal notranslate"><span class="pre">environment</span></code>和来自所有父<code class="docutils literal notranslate"><span class="pre">environment</span></code>的环境的结合。如果此联合中的多个预设定义了相同的变量，则应用<code class="docutils literal notranslate"><span class="pre">inherits</span></code>的标准规则。将变量设置为<code class="docutils literal notranslate"><span class="pre">null</span></code>将导致不设置该变量，即使该值是从另一个预设继承的。</p>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>对于使用ExternalProject的CMake项目，使用具有ExternalProject中需要的环境变量的配置预置，使用继承该配置预置的构建预置，否则ExternalProject将不会在配置预置中设置环境变量。示例：假设主机默认使用一个编译器（比如Clang），而用户希望使用另一个编译器（比如GCC）。设置配置预设环境变量<code class="docutils literal notranslate"><span class="pre">CC</span></code>和<code class="docutils literal notranslate"><span class="pre">CXX</span></code>，并使用继承该配置预设的构建预设。否则，ExternalProject可能会使用与顶级CMake项目不同的（系统默认）编译器。</p>
+</div>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">configurePreset</span></code></dt><dd><p>一个可选字符串，指定要与此生成预设关联的配置预设的名称。如果未指定<code class="docutils literal notranslate"><span class="pre">configurePreset</span></code>，则必须从所继承的预设中继承（除非该预设是隐藏的）。构建目录是从配置预设中推断出来的，因此构建将在与配置相同的<code class="docutils literal notranslate"><span class="pre">binaryDir</span></code>中进行。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">inheritConfigureEnvironment</span></code></dt><dd><p>默认为true的可选布尔值。如果为true，则在所有继承的构建预设环境之后，但在此构建预设中显式指定的环境变量之前，继承相关配置预设的环境变量。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">jobs</span></code></dt><dd><p>可选整数。相当于在命令行上传递<a class="reference internal" href="cmake.1.html#cmdoption-cmake-build-j"><code class="xref std std-option docutils literal notranslate"><span class="pre">--parallel</span></code></a>或<code class="docutils literal notranslate"><span class="pre">-j</span></code>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">targets</span></code></dt><dd><p>一个可选的字符串或字符串数组。相当于在命令行上传递<a class="reference internal" href="cmake.1.html#cmdoption-cmake-build-t"><code class="xref std std-option docutils literal notranslate"><span class="pre">--target</span></code></a>或<code class="docutils literal notranslate"><span class="pre">-t</span></code>。供应商可以忽略目标属性或隐藏显式指定目标的构建预设。该字段支持宏扩展。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">configuration</span></code></dt><dd><p>可选字符串。相当于在命令行上传递<a class="reference internal" href="cmake.1.html#cmdoption-cmake-build-config"><code class="xref std std-option docutils literal notranslate"><span class="pre">--config</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">cleanFirst</span></code></dt><dd><p>可选bool。如果为true，相当于在命令行上传递<a class="reference internal" href="cmake.1.html#cmdoption-cmake-build-clean-first"><code class="xref std std-option docutils literal notranslate"><span class="pre">--clean-first</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">resolvePackageReferences</span></code></dt><dd><p>指定包解析模式的可选字符串。这在指定版本<code class="docutils literal notranslate"><span class="pre">4</span></code>或以上的预设文件中是允许的。</p>
+<p>包引用用于定义对来自外部包管理器的包的依赖。目前只支持NuGet与Visual Studio生成器的组合。如果没有定义包引用的目标，则此选项不执行任何操作。有效值为：</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">on</span></code></dt><dd><p>导致在尝试构建之前解析包引用。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">off</span></code></dt><dd><p>包引用将不会被解析。请注意，这可能会在某些构建环境中导致错误，例如.NET SDK风格的项目。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">only</span></code></dt><dd><p>仅解析包引用，但不执行构建。</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>命令行参数<a class="reference internal" href="cmake.1.html#cmdoption-cmake-build-resolve-package-references"><code class="xref std std-option docutils literal notranslate"><span class="pre">--resolve-package-references</span></code></a>将优先于此设置。如果未提供命令行参数并且未指定此设置，则将评估特定于环境的缓存变量以决定是否应该执行包恢复。</p>
+<p>当使用Visual Studio生成器时，包引用是使用<span class="target" id="index-0-prop_tgt:VS_PACKAGE_REFERENCES"></span><a class="reference internal" href="../prop_tgt/VS_PACKAGE_REFERENCES.html#prop_tgt:VS_PACKAGE_REFERENCES" title="VS_PACKAGE_REFERENCES"><code class="xref cmake cmake-prop_tgt docutils literal notranslate"><span class="pre">VS_PACKAGE_REFERENCES</span></code></a>属性定义的。使用NuGet恢复包引用。可以通过将<code class="docutils literal notranslate"><span class="pre">CMAKE_VS_NUGET_PACKAGE_RESTORE</span></code>变量设置为<code class="docutils literal notranslate"><span class="pre">OFF</span></code>来禁用它。这也可以在配置预设中完成。</p>
+</div>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">verbose</span></code></dt><dd><p>可选bool。如果为true，相当于在命令行上传递<a class="reference internal" href="cmake.1.html#cmdoption-cmake-build-v"><code class="xref std std-option docutils literal notranslate"><span class="pre">--verbose</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">nativeToolOptions</span></code></dt><dd><p>一个可选的字符串数组。相当于在命令行上在<code class="docutils literal notranslate"><span class="pre">--</span></code>之后传递选项。数组值支持宏扩展。</p>
+</dd>
+</dl>
+</section>
+<section id="id7">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">测试预设</a><a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">testPresets</span></code>数组的每个条目都是一个JSON对象，可能包含以下字段：</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">name</span></code></dt><dd><p>必需的字符串，表示预设的机器友好的名称。这个标识符在<a class="reference internal" href="ctest.1.html#cmdoption-ctest-preset"><code class="xref std std-option docutils literal notranslate"><span class="pre">ctest</span> <span class="pre">--preset</span></code></a>选项中使用。<code class="docutils literal notranslate"><span class="pre">CMakePresets.json</span></code>和<code class="docutils literal notranslate"><span class="pre">CMakeUserPresets.json</span></code>的联合目录中不能有两个测试预置，且名称相同。然而，测试预设可能与配置、构建、打包或工作流预设具有相同的名称。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">hidden</span></code></dt><dd><p>一个可选的布尔值，指定是否应该隐藏预设。如果一个预设是隐藏的，那么它就不能在<a class="reference internal" href="ctest.1.html#cmdoption-ctest-preset"><code class="xref std std-option docutils literal notranslate"><span class="pre">--preset</span></code></a>参数中使用，也不必有一个有效的<code class="docutils literal notranslate"><span class="pre">configurePreset</span></code>，即使是从继承中也是如此。<code class="docutils literal notranslate"><span class="pre">hidden</span></code>预设被用作其他预设通过<code class="docutils literal notranslate"><span class="pre">inherits</span></code>字段继承的基础。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">inherits</span></code></dt><dd><p>一个可选的字符串数组，表示要继承的预设的名称。该字段也可以是字符串，相当于包含一个字符串的数组。</p>
+<p>默认情况下，预设将继承<code class="docutils literal notranslate"><span class="pre">inherits</span></code>预设中的所有字段（除了<code class="docutils literal notranslate"><span class="pre">name</span></code>、<code class="docutils literal notranslate"><span class="pre">hidden</span></code>、<code class="docutils literal notranslate"><span class="pre">inherits</span></code>、<code class="docutils literal notranslate"><span class="pre">description</span></code>和<code class="docutils literal notranslate"><span class="pre">displayName</span></code>），但是可以根据需要覆盖它们。如果多个<code class="docutils literal notranslate"><span class="pre">inherits</span></code>预设为同一字段提供冲突的值，则优先选择<code class="docutils literal notranslate"><span class="pre">inherits</span></code>数组中较早的预设。</p>
+<p>预设只能从定义在同一文件或其包含的其中一个文件中的另一个预设继承（直接或间接）。<code class="docutils literal notranslate"><span class="pre">CMakePresets.json</span></code>中的预置不能继承<code class="docutils literal notranslate"><span class="pre">CMakeUserPresets.json</span></code>中的预置。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">condition</span></code></dt><dd><p>一个可选的<a class="reference internal" href="#id10">条件</a>对象。这在指定版本<code class="docutils literal notranslate"><span class="pre">3</span></code>或以上的预设文件中是允许的。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">vendor</span></code></dt><dd><p>一个可选的映射，包含特定于供应商的信息。CMake不会解释这个字段的内容，除非验证它是否存在。但是，它应该遵循与根级<code class="docutils literal notranslate"><span class="pre">vendor</span></code>字段相同的约定。如果供应商使用他们自己预置的<code class="docutils literal notranslate"><span class="pre">vendor</span></code>字段，他们应该在适当的时候以合理的方式实现继承。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">displayName</span></code></dt><dd><p>一个可选字符串，具有预设的人性化名称。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">description</span></code></dt><dd><p>一个可选的字符串，具有对预设的人性化描述。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">environment</span></code></dt><dd><p>环境变量的可选映射。关键字是变量名（可能不是空字符串），值要么为<code class="docutils literal notranslate"><span class="pre">null</span></code>，要么为表示变量值的字符串。无论进程的环境是否给每个变量赋值，都会设置它。该字段支持宏扩展，并且该映射中的环境变量可以相互引用，并且可以以任何顺序列出，只要这些引用不引起循环（例如，如果<code class="docutils literal notranslate"><span class="pre">ENV_1</span></code>是<code class="docutils literal notranslate"><span class="pre">$env{ENV_2}</span></code>，则<code class="docutils literal notranslate"><span class="pre">ENV_2</span></code>不可是<code class="docutils literal notranslate"><span class="pre">$env{ENV_1}</span></code>）。</p>
+<p>环境变量通过<code class="docutils literal notranslate"><span class="pre">inherits</span></code>字段继承，预设的环境将是它自己的<code class="docutils literal notranslate"><span class="pre">environment</span></code>和来自所有父<code class="docutils literal notranslate"><span class="pre">environment</span></code>环境的结合。如果此联合中的多个预设定义了相同的变量，则应用<code class="docutils literal notranslate"><span class="pre">inherits</span></code>的标准规则。将变量设置为<code class="docutils literal notranslate"><span class="pre">null</span></code>将导致不设置该变量，即使该值是从另一个预设继承的。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">configurePreset</span></code></dt><dd><p>一个可选字符串，指定要与此测试预置关联的配置预置的名称。如果未指定<code class="docutils literal notranslate"><span class="pre">configurePreset</span></code>，则必须从所继承的预设中继承（除非该预设是隐藏的）。构建目录是从配置预设中推断出来的，因此测试将在配置和构建所使用的相同的<code class="docutils literal notranslate"><span class="pre">binaryDir</span></code>中运行。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">inheritConfigureEnvironment</span></code></dt><dd><p>默认为true的可选布尔值。如果为true，则在所有继承的测试预设环境之后，但是在此测试预设中显式指定的环境变量之前，从关联的配置预设中继承环境变量。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">configuration</span></code></dt><dd><p>可选字符串。相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-C"><code class="xref std std-option docutils literal notranslate"><span class="pre">--build-config</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">overwriteConfigurationFile</span></code></dt><dd><p>一个可选的配置选项数组，用于覆盖CTest配置文件中指定的选项。相当于为数组中的每个值传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-overwrite"><code class="xref std std-option docutils literal notranslate"><span class="pre">--overwrite</span></code></a>。数组值支持宏扩展。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">output</span></code></dt><dd><p>指定输出选项的可选对象。该对象可以包含以下字段。</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">shortProgress</span></code></dt><dd><p>可选bool。如果为true，相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-progress"><code class="xref std std-option docutils literal notranslate"><span class="pre">--progress</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">verbosity</span></code></dt><dd><p>指定冗长级别的可选字符串。必须是下列之一：</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">default</span></code></dt><dd><p>相当于在命令行上不传递冗长标志。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">verbose</span></code></dt><dd><p>相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-V"><code class="xref std std-option docutils literal notranslate"><span class="pre">--verbose</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">extra</span></code></dt><dd><p>相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-VV"><code class="xref std std-option docutils literal notranslate"><span class="pre">--extra-verbose</span></code></a>。</p>
+</dd>
+</dl>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">debug</span></code></dt><dd><p>可选bool。如果为true，相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-debug"><code class="xref std std-option docutils literal notranslate"><span class="pre">--debug</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">outputOnFailure</span></code></dt><dd><p>可选bool。如果为真，相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-output-on-failure"><code class="xref std std-option docutils literal notranslate"><span class="pre">--output-on-failure</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">quiet</span></code></dt><dd><p>可选bool。如果为true，相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-Q"><code class="xref std std-option docutils literal notranslate"><span class="pre">--quiet</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">outputLogFile</span></code></dt><dd><p>指定日志文件路径的可选字符串。相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-O"><code class="xref std std-option docutils literal notranslate"><span class="pre">--output-log</span></code></a>。该字段支持宏扩展。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">outputJUnitFile</span></code></dt><dd><p>指定JUnit文件路径的可选字符串。相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-output-junit"><code class="xref std std-option docutils literal notranslate"><span class="pre">--output-junit</span></code></a>。该字段支持宏扩展。这在指定版本<code class="docutils literal notranslate"><span class="pre">6</span></code>或以上的预设文件中是允许的。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">labelSummary</span></code></dt><dd><p>可选bool。如果为false，相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-no-label-summary"><code class="xref std std-option docutils literal notranslate"><span class="pre">--no-label-summary</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">subprojectSummary</span></code></dt><dd><p>可选bool。如果为false，相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-no-subproject-summary"><code class="xref std std-option docutils literal notranslate"><span class="pre">--no-subproject-summary</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">maxPassedTestOutputSize</span></code></dt><dd><p>可选整数，以字节为单位指定通过测试的最大输出。相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-test-output-size-passed"><code class="xref std std-option docutils literal notranslate"><span class="pre">--test-output-size-passed</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">maxFailedTestOutputSize</span></code></dt><dd><p>可选整数，以字节为单位指定失败测试的最大输出。相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-test-output-size-failed"><code class="xref std std-option docutils literal notranslate"><span class="pre">--test-output-size-failed</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">testOutputTruncation</span></code></dt><dd><p>指定测试输出截断模式的可选字符串。相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-test-output-truncation"><code class="xref std std-option docutils literal notranslate"><span class="pre">--test-output-truncation</span></code></a>。这在指定版本<code class="docutils literal notranslate"><span class="pre">5</span></code>或以上的预设文件中是允许的。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">maxTestNameWidth</span></code></dt><dd><p>可选整数，指定要输出的测试名的最大宽度。相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-max-width"><code class="xref std std-option docutils literal notranslate"><span class="pre">--max-width</span></code></a>。</p>
+</dd>
+</dl>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">filter</span></code></dt><dd><p>指定如何筛选要运行的测试的可选对象。该对象可以包含以下字段。</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">include</span></code></dt><dd><p>指定要包含哪些测试的可选对象。该对象可以包含以下字段。</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">name</span></code></dt><dd><p>一个可选字符串，指定测试名称的正则表达式。相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-R"><code class="xref std std-option docutils literal notranslate"><span class="pre">--tests-regex</span></code></a>。该字段支持宏扩展。CMake正则表达式语法在<a class="reference internal" href="../command/string.html#regex-specification"><span class="std std-ref">string(REGEX)</span></a>下描述。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">label</span></code></dt><dd><p>一个可选字符串，指定测试标签的正则表达式。相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-L"><code class="xref std std-option docutils literal notranslate"><span class="pre">--label-regex</span></code></a>。该字段支持宏扩展。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">useUnion</span></code></dt><dd><p>可选bool。相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-U"><code class="xref std std-option docutils literal notranslate"><span class="pre">--union</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">index</span></code></dt><dd><p>一个可选对象，按测试索引指定要包含的测试。该对象可以包含以下字段。也可以是一个可选字符串，用命令行语法<a class="reference internal" href="ctest.1.html#cmdoption-ctest-I"><code class="xref std std-option docutils literal notranslate"><span class="pre">--tests-information</span></code></a>指定一个文件。如果指定为字符串，则此字段支持宏展开。</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">start</span></code></dt><dd><p>一个可选的整数，指定要开始测试的测试索引。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">end</span></code></dt><dd><p>一个可选整数，指定要停止测试的测试索引。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">stride</span></code></dt><dd><p>指定增量的可选整数。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">specificTests</span></code></dt><dd><p>一个可选的整数数组，指定要运行的特定测试索引。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">exclude</span></code></dt><dd><p>指定要排除哪些测试的可选对象。该对象可以包含以下字段。</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">name</span></code></dt><dd><p>一个可选字符串，指定测试名称的正则表达式。相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-E"><code class="xref std std-option docutils literal notranslate"><span class="pre">--exclude-regex</span></code></a>。该字段支持宏扩展。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">label</span></code></dt><dd><p>一个可选字符串，指定测试标签的正则表达式。相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-LE"><code class="xref std std-option docutils literal notranslate"><span class="pre">--label-exclude</span></code></a>。该字段支持宏扩展。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">fixtures</span></code></dt><dd><p>一个可选对象，指定要从添加测试中排除哪些fixture。该对象可以包含以下字段。</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">any</span></code></dt><dd><p>一个可选字符串，指定要在添加任何测试时排除的文本fixture的正则表达式。相当于命令行上的<a class="reference internal" href="ctest.1.html#cmdoption-ctest-FA"><code class="xref std std-option docutils literal notranslate"><span class="pre">--fixture-exclude-any</span></code></a>。该字段支持宏扩展。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">setup</span></code></dt><dd><p>一个可选字符串，指定要在添加安装测试时排除的文本fixture的正则表达式。相当于命令行上的<a class="reference internal" href="ctest.1.html#cmdoption-ctest-FS"><code class="xref std std-option docutils literal notranslate"><span class="pre">--fixture-exclude-setup</span></code></a>。该字段支持宏扩展。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">cleanup</span></code></dt><dd><p>一个可选字符串，指定要在添加清理测试时排除的文本fixture的正则表达式。相当于命令行上的<a class="reference internal" href="ctest.1.html#cmdoption-ctest-FC"><code class="xref std std-option docutils literal notranslate"><span class="pre">--fixture-exclude-cleanup</span></code></a>。该字段支持宏扩展。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">execution</span></code></dt><dd><p>指定测试执行选项的可选对象。该对象可以包含以下字段。</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">stopOnFailure</span></code></dt><dd><p>可选bool。如果为true，相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-stop-on-failure"><code class="xref std std-option docutils literal notranslate"><span class="pre">--stop-on-failure</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">enableFailover</span></code></dt><dd><p>可选bool。如果为true，相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-F"><code class="xref std std-option docutils literal notranslate"><span class="pre">-F</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">jobs</span></code></dt><dd><p>可选整数。相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-j"><code class="xref std std-option docutils literal notranslate"><span class="pre">--parallel</span></code></a> on the command line。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">resourceSpecFile</span></code></dt><dd><p>可选字符串。相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-resource-spec-file"><code class="xref std std-option docutils literal notranslate"><span class="pre">--resource-spec-file</span></code></a>。该字段支持宏扩展。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">testLoad</span></code></dt><dd><p>可选整数。相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-test-load"><code class="xref std std-option docutils literal notranslate"><span class="pre">--test-load</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">showOnly</span></code></dt><dd><p>可选字符串。相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-N"><code class="xref std std-option docutils literal notranslate"><span class="pre">--show-only</span></code></a>。字符串必须是以下值之一：</p>
+<p><code class="docutils literal notranslate"><span class="pre">human</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">json-v1</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">repeat</span></code></dt><dd><p>指定如何重复测试的可选对象。相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-repeat"><code class="xref std std-option docutils literal notranslate"><span class="pre">--repeat</span></code></a>。该对象必须具有以下字段。</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">mode</span></code></dt><dd><p>必需的字符串。必须是以下值之一：</p>
+<p><code class="docutils literal notranslate"><span class="pre">until-fail</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">until-pass</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">after-timeout</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">count</span></code></dt><dd><p>必需的整数。</p>
+</dd>
+</dl>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">interactiveDebugging</span></code></dt><dd><p>可选bool。如果为true，相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-interactive-debug-mode"><code class="xref std std-option docutils literal notranslate"><span class="pre">--interactive-debug-mode</span> <span class="pre">1</span></code></a>。如果为false，相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-interactive-debug-mode"><code class="xref std std-option docutils literal notranslate"><span class="pre">--interactive-debug-mode</span> <span class="pre">0</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">scheduleRandom</span></code></dt><dd><p>可选bool。如果为true，相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-schedule-random"><code class="xref std std-option docutils literal notranslate"><span class="pre">--schedule-random</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">timeout</span></code></dt><dd><p>可选整数。相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-timeout"><code class="xref std std-option docutils literal notranslate"><span class="pre">--timeout</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">noTestsAction</span></code></dt><dd><p>一个可选字符串，指定未找到测试时的行为。必须是以下值之一：</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">default</span></code></dt><dd><p>相当于在命令行上不传递任何值。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">error</span></code></dt><dd><p>相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-no-tests"><code class="xref std std-option docutils literal notranslate"><span class="pre">--no-tests=error</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">ignore</span></code></dt><dd><p>相当于在命令行上传递<a class="reference internal" href="ctest.1.html#cmdoption-ctest-no-tests"><code class="xref std std-option docutils literal notranslate"><span class="pre">--no-tests=ignore</span></code></a>。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+<section id="id8">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">包预设</a><a class="headerlink" href="#id8" title="Link to this heading">¶</a></h3>
+<p>包预设可以在架构版本<code class="docutils literal notranslate"><span class="pre">6</span></code>或更高版本中使用。<code class="docutils literal notranslate"><span class="pre">packagePresets</span></code>数组的每个条目都是一个JSON对象，可能包含以下字段：</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">name</span></code></dt><dd><p>必需的字符串，表示预设的机器友好的名称。这个标识符在<a class="reference internal" href="cpack.1.html#cmdoption-cpack-preset"><code class="xref std std-option docutils literal notranslate"><span class="pre">cpack</span> <span class="pre">--preset</span></code></a>选项中使用。在<code class="docutils literal notranslate"><span class="pre">CMakePresets.json</span></code>和<code class="docutils literal notranslate"><span class="pre">CMakeUserPresets.json</span></code>的联合目录中，不能有两个包预置，且名称相同。但是，包预置可能与配置、构建、测试或工作流预置具有相同的名称。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">hidden</span></code></dt><dd><p>一个可选的布尔值，指定是否应该隐藏预设。如果一个预设是隐藏的，那么它就不能在<a class="reference internal" href="cpack.1.html#cmdoption-cpack-preset"><code class="xref std std-option docutils literal notranslate"><span class="pre">--preset</span></code></a>参数中使用，也不必有一个有效的<code class="docutils literal notranslate"><span class="pre">configurePreset</span></code>，即使是从继承中也是如此。<code class="docutils literal notranslate"><span class="pre">hidden</span></code>预设被用作其他预设通过<code class="docutils literal notranslate"><span class="pre">inherits</span></code>字段继承的基础。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">inherits</span></code></dt><dd><p>一个可选的字符串数组，表示要继承的预设的名称。该字段也可以是字符串，相当于包含一个字符串的数组。</p>
+<p>默认情况下，预设将继承<code class="docutils literal notranslate"><span class="pre">inherits</span></code>预设中的所有字段（除了<code class="docutils literal notranslate"><span class="pre">name</span></code>、<code class="docutils literal notranslate"><span class="pre">hidden</span></code>、<code class="docutils literal notranslate"><span class="pre">inherits</span></code>、<code class="docutils literal notranslate"><span class="pre">description</span></code>和<code class="docutils literal notranslate"><span class="pre">displayName</span></code>），但是可以根据需要覆盖它们。如果多个<code class="docutils literal notranslate"><span class="pre">inherits</span></code>预设为同一字段提供冲突的值，则优先选择<code class="docutils literal notranslate"><span class="pre">inherits</span></code>数组中较早的预设。</p>
+<p>预设只能从定义在同一文件或其包含的其中一个文件中的另一个预设继承（直接或间接）。<code class="docutils literal notranslate"><span class="pre">CMakePresets.json</span></code>中的预置不能继承<code class="docutils literal notranslate"><span class="pre">CMakeUserPresets.json</span></code>中的预置。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">condition</span></code></dt><dd><p>一个可选的<a class="reference internal" href="#id10">条件</a>对象。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">vendor</span></code></dt><dd><p>一个可选的映射，包含特定于供应商的信息。CMake不会解释这个字段的内容，除非验证它是否存在。但是，它应该遵循与根级<code class="docutils literal notranslate"><span class="pre">vendor</span></code>字段相同的约定。如果供应商使用他们自己预置的<code class="docutils literal notranslate"><span class="pre">vendor</span></code>字段，他们应该在适当的时候以合理的方式实现继承。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">displayName</span></code></dt><dd><p>一个可选字符串，具有预设的人性化名称。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">description</span></code></dt><dd><p>一个可选的字符串，具有对预设的人性化描述。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">environment</span></code></dt><dd><p>环境变量的可选映射。关键字是变量名（可能不是空字符串），值要么为<code class="docutils literal notranslate"><span class="pre">null</span></code>，要么为表示变量值的字符串。无论进程的环境是否给每个变量赋值，都会设置它。该字段支持宏扩展，并且该映射中的环境变量可以相互引用，并且可以以任何顺序列出，只要这些引用不引起循环（例如，如果<code class="docutils literal notranslate"><span class="pre">ENV_1</span></code>是<code class="docutils literal notranslate"><span class="pre">$env{ENV_2}</span></code>，则<code class="docutils literal notranslate"><span class="pre">ENV_2</span></code>不能是<code class="docutils literal notranslate"><span class="pre">$env{ENV_1}</span></code>）。</p>
+<p>环境变量通过<code class="docutils literal notranslate"><span class="pre">inherits</span></code>字段继承，预设的环境将是它自己的<code class="docutils literal notranslate"><span class="pre">environment</span></code>和来自所有父<code class="docutils literal notranslate"><span class="pre">environment</span></code>的环境的结合。如果此联合中的多个预设定义了相同的变量，则应用<code class="docutils literal notranslate"><span class="pre">inherits</span></code>的标准规则。将变量设置为<code class="docutils literal notranslate"><span class="pre">null</span></code>将导致不设置该变量，即使该值是从另一个预设继承的。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">configurePreset</span></code></dt><dd><p>一个可选字符串，指定要与此包预置关联的配置预置的名称。如果未指定<code class="docutils literal notranslate"><span class="pre">configurePreset</span></code>，则必须从所继承的预设中继承（除非该预设是隐藏的）。构建目录是从配置预设中推断出来的，因此打包将在配置和构建所运行的同一个<code class="docutils literal notranslate"><span class="pre">binaryDir</span></code>下运行。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">inheritConfigureEnvironment</span></code></dt><dd><p>默认为true的可选布尔值。如果为true，则在所有继承的包预置环境之后，但在此包预置中显式指定的环境变量之前继承相关配置预置的环境变量。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">generators</span></code></dt><dd><p>一个可选的字符串数组，表示供CPack使用的生成器。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">configurations</span></code></dt><dd><p>一个可选的字符串数组，表示CPack要打包的构建配置。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">variables</span></code></dt><dd><p>传递给CPack的可选变量映射，相当于<a class="reference internal" href="cpack.1.html#cmdoption-cpack-D"><code class="xref std std-option docutils literal notranslate"><span class="pre">-D</span></code></a>参数。每个键是一个变量的名称，值是要分配给该变量的字符串。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">configFile</span></code></dt><dd><p>一个可选字符串，表示供CPack使用的配置文件。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">output</span></code></dt><dd><p>指定输出选项的可选对象。有效的密钥有：</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">debug</span></code></dt><dd><p>一个可选的布尔值，指定是否打印调试信息。值为<code class="docutils literal notranslate"><span class="pre">true</span></code>相当于在命令行上传递<a class="reference internal" href="cpack.1.html#cmdoption-cpack-debug"><code class="xref std std-option docutils literal notranslate"><span class="pre">--debug</span></code></a>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">verbose</span></code></dt><dd><p>一个可选的布尔值，指定是否详细打印。值为<code class="docutils literal notranslate"><span class="pre">true</span></code>等同于在命令行上传递<a class="reference internal" href="cpack.1.html#cmdoption-cpack-V"><code class="xref std std-option docutils literal notranslate"><span class="pre">--verbose</span></code></a>。</p>
+</dd>
+</dl>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">packageName</span></code></dt><dd><p>表示包名的可选字符串。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">packageVersion</span></code></dt><dd><p>表示包版本的可选字符串。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">packageDirectory</span></code></dt><dd><p>一个可选字符串，表示放置包的目录。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">vendorName</span></code></dt><dd><p>表示供应商名称的可选字符串。</p>
+</dd>
+</dl>
+</section>
+<section id="workflow-preset">
+<span id="id9"></span><h3><a class="toc-backref" href="#id21" role="doc-backlink">工作流预设</a><a class="headerlink" href="#workflow-preset" title="Link to this heading">¶</a></h3>
+<p>工作流预设可以在架构版本<code class="docutils literal notranslate"><span class="pre">6</span></code>或更高版本中使用。<code class="docutils literal notranslate"><span class="pre">workflowPresets</span></code>数组的每个条目都是一个JSON对象，可能包含以下字段：</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">name</span></code></dt><dd><p>必需的字符串，表示预设的机器友好的名称。这个标识符在<a class="reference internal" href="cmake.1.html#workflow-mode"><span class="std std-ref">cmake --workflow --preset</span></a>选项中使用。在<code class="docutils literal notranslate"><span class="pre">CMakePresets.json</span></code>和<code class="docutils literal notranslate"><span class="pre">CMakeUserPresets.json</span></code>的联合目录中，不能有两个同名的工作流预置。然而，工作流预设可能与配置、构建、测试或包预设具有相同的名称。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">vendor</span></code></dt><dd><p>一个可选的映射，包含特定于供应商的信息。CMake不会解释这个字段的内容，除非验证它是否存在。但是，它应该遵循与根级<code class="docutils literal notranslate"><span class="pre">vendor</span></code>字段相同的约定。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">displayName</span></code></dt><dd><p>一个可选字符串，具有预设的人性化名称。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">description</span></code></dt><dd><p>一个可选的字符串，具有对预设的人性化描述。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">steps</span></code></dt><dd><p>描述工作流步骤的必要对象数组。第一步必须是配置预设，所有后续步骤必须是非配置预设，其<code class="docutils literal notranslate"><span class="pre">configurePreset</span></code>字段与开始的配置预设匹配。每个对象可能包含以下字段：</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">type</span></code></dt><dd><p>必需的字符串。第一步必须<code class="docutils literal notranslate"><span class="pre">configure</span></code>。后续步骤必须是<code class="docutils literal notranslate"><span class="pre">build</span></code>、<code class="docutils literal notranslate"><span class="pre">test</span></code>或<code class="docutils literal notranslate"><span class="pre">package</span></code>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">name</span></code></dt><dd><p>一个必需的字符串，表示作为此工作流步骤运行的配置、构建、测试或包预置的名称。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+<section id="id10">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">条件</a><a class="headerlink" href="#id10" title="Link to this heading">¶</a></h3>
+<p>指定版本<code class="docutils literal notranslate"><span class="pre">3</span></code>或更高版本的预置文件中允许的预置<code class="docutils literal notranslate"><span class="pre">condition</span></code>字段用于确定是否启用该预置。例如，这可以用于在Windows以外的平台上禁用预设。<code class="docutils literal notranslate"><span class="pre">condition</span></code>可以是布尔值、<code class="docutils literal notranslate"><span class="pre">null</span></code>或对象。如果是布尔值，则布尔值表示该预置是启用还是禁用。如果为<code class="docutils literal notranslate"><span class="pre">null</span></code>，则启用该预设，但任何可能从该预设继承的预设都不会继承<code class="docutils literal notranslate"><span class="pre">null</span></code>条件。子条件（例如<code class="docutils literal notranslate"><span class="pre">not</span></code>、<code class="docutils literal notranslate"><span class="pre">anyOf</span></code>或<code class="docutils literal notranslate"><span class="pre">allOf</span></code>条件）不能为<code class="docutils literal notranslate"><span class="pre">null</span></code>。如果它是一个对象，它有以下字段：</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">type</span></code></dt><dd><p>必须的字符串，具有以下值之一：</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">&quot;const&quot;</span></code></dt><dd><p>指示条件是恒定的。这相当于使用布尔值代替对象。条件对象将具有以下附加字段：</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">value</span></code></dt><dd><p>一个必需的布尔值，它为条件的求值提供一个常量值。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">&quot;equals&quot;</span></code></p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">&quot;notEquals&quot;</span></code></dt><dd><p>指示条件比较两个字符串，看它们是否相等（或不相等）。条件对象将具有以下附加字段：</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">lhs</span></code></dt><dd><p>第一个要比较的字符串。该字段支持宏扩展。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">rhs</span></code></dt><dd><p>第二个要比较的字符串。该字段支持宏扩展。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">&quot;inList&quot;</span></code></p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">&quot;notInList&quot;</span></code></dt><dd><p>指示该条件在字符串列表中搜索字符串。条件对象将具有以下附加字段：</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">string</span></code></dt><dd><p>需要搜索的字符串。该字段支持宏扩展。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">list</span></code></dt><dd><p>需要搜索的字符串数组。该字段支持宏扩展，并使用短路求值。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">&quot;matches&quot;</span></code></p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">&quot;notMatches&quot;</span></code></dt><dd><p>表示该条件在字符串中搜索正则表达式。条件对象将具有以下附加字段：</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">string</span></code></dt><dd><p>需要搜索的字符串。该字段支持宏扩展。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">regex</span></code></dt><dd><p>需要搜索的正则表达式。该字段支持宏扩展。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">&quot;anyOf&quot;</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">&quot;allOf&quot;</span></code></p>
+<blockquote>
+<div><p>指示条件是零个或多个嵌套条件的聚合。条件对象将具有以下附加字段：</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">conditions</span></code></dt><dd><p>必需的条件对象数组。这些条件使用短路求值。</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">&quot;not&quot;</span></code></dt><dd><p>指示条件是另一个条件的反转。条件对象将具有以下附加字段：</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">condition</span></code></dt><dd><p>必需条件对象。</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+<section id="id11">
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">宏扩展</a><a class="headerlink" href="#id11" title="Link to this heading">¶</a></h3>
+<p>如上所述，一些字段支持宏扩展。宏的识别形式为<code class="docutils literal notranslate"><span class="pre">$&lt;macro-namespace&gt;{&lt;macro-name&gt;}</span></code>。所有宏都在正在使用的预设上下文中求值，即使宏位于从另一个预设继承的字段中。例如，如果<code class="docutils literal notranslate"><span class="pre">Base</span></code>预置将变量<code class="docutils literal notranslate"><span class="pre">PRESET_NAME</span></code>设置为<code class="docutils literal notranslate"><span class="pre">${presetName}</span></code>，而<code class="docutils literal notranslate"><span class="pre">Derived</span></code>预置继承自<code class="docutils literal notranslate"><span class="pre">Base</span></code>，则<code class="docutils literal notranslate"><span class="pre">PRESET_NAME</span></code>将被设置为<code class="docutils literal notranslate"><span class="pre">Derived</span></code>。</p>
+<p>在宏名称的末尾不加上右括号是错误的。例如，<code class="docutils literal notranslate"><span class="pre">${sourceDir</span></code>无效。美元符号（<code class="docutils literal notranslate"><span class="pre">$</span></code>）后面跟一个可能的命名空间的左花括号（<code class="docutils literal notranslate"><span class="pre">{</span></code>）以外的任何东西都会被解释为字面的美元符号。</p>
+<p>可识别的宏包括：</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">${sourceDir}</span></code></dt><dd><p>项目源目录的路径（即与<span class="target" id="index-0-variable:CMAKE_SOURCE_DIR"></span><a class="reference internal" href="../variable/CMAKE_SOURCE_DIR.html#variable:CMAKE_SOURCE_DIR" title="CMAKE_SOURCE_DIR"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_SOURCE_DIR</span></code></a>相同）。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">${sourceParentDir}</span></code></dt><dd><p>项目源目录的父目录的路径。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">${sourceDirName}</span></code></dt><dd><p><code class="docutils literal notranslate"><span class="pre">${sourceDir}</span></code>的最后一个文件名组件。例如，如果<code class="docutils literal notranslate"><span class="pre">${sourceDir}</span></code>是<code class="docutils literal notranslate"><span class="pre">/path/to/source</span></code>，这将是<code class="docutils literal notranslate"><span class="pre">source</span></code>。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">${presetName}</span></code></dt><dd><p>在预设的<code class="docutils literal notranslate"><span class="pre">name</span></code>字段中指定的名称。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">${generator}</span></code></dt><dd><p>在预设的<code class="docutils literal notranslate"><span class="pre">generator</span></code>字段中指定的生成器。对于构建和测试预设，这将计算为<code class="docutils literal notranslate"><span class="pre">configurePreset</span></code>指定的生成器。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">${hostSystemName}</span></code></dt><dd><p>主机操作系统的名称。与<span class="target" id="index-0-variable:CMAKE_HOST_SYSTEM_NAME"></span><a class="reference internal" href="../variable/CMAKE_HOST_SYSTEM_NAME.html#variable:CMAKE_HOST_SYSTEM_NAME" title="CMAKE_HOST_SYSTEM_NAME"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_HOST_SYSTEM_NAME</span></code></a>相同。这在指定版本<code class="docutils literal notranslate"><span class="pre">3</span></code>或以上的预设文件中是允许的。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">${fileDir}</span></code></dt><dd><p>包含包含宏的预设文件的目录的路径。这在指定版本<code class="docutils literal notranslate"><span class="pre">4</span></code>或以上的预设文件中是允许的。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">${dollar}</span></code></dt><dd><p>字面上的美元符号（<code class="docutils literal notranslate"><span class="pre">$</span></code>）。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">${pathListSep}</span></code></dt><dd><p>分隔路径列表的本地字符，如<code class="docutils literal notranslate"><span class="pre">:</span></code>或<code class="docutils literal notranslate"><span class="pre">;</span></code>。</p>
+<p>例如，通过将<code class="docutils literal notranslate"><span class="pre">PATH</span></code>设置为<code class="docutils literal notranslate"><span class="pre">/path/to/ninja/bin${pathListSep}$env{PATH}</span></code>，<code class="docutils literal notranslate"><span class="pre">${pathListSep}</span></code>将扩展为用于在<code class="docutils literal notranslate"><span class="pre">PATH</span></code>中连接的底层操作系统的字符。</p>
+<p>这在指定版本<code class="docutils literal notranslate"><span class="pre">5</span></code>或以上的预设文件中是允许的。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">$env{&lt;variable-name&gt;}</span></code></dt><dd><p>名称为<code class="docutils literal notranslate"><span class="pre">&lt;variable-name&gt;</span></code>的环境变量。变量名不能是空字符串。如果变量在<code class="docutils literal notranslate"><span class="pre">environment</span></code>字段中定义，则使用该值而不是来自父环境的值。如果没有定义环境变量，则计算结果为空字符串。</p>
+<p>请注意，虽然Windows环境变量名是不区分大小写的，但预设中的变量名仍然是区分大小写的。当使用不一致的套管时，这可能会导致意想不到的结果。为了获得最佳效果，请保持环境变量名称的大小写一致。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">$penv{&lt;variable-name&gt;}</span></code></dt><dd><p>类似于<code class="docutils literal notranslate"><span class="pre">$env{&lt;variable-name&gt;}</span></code>，不同之处在于该值只来自父环境，而不来自<code class="docutils literal notranslate"><span class="pre">environment</span></code>字段。这允许你在现有环境变量上添加或追加值。例如，将<code class="docutils literal notranslate"><span class="pre">PATH</span></code>设置为<code class="docutils literal notranslate"><span class="pre">/path/to/ninja/bin:$penv{PATH}</span></code>将把<code class="docutils literal notranslate"><span class="pre">/path/to/ninja/bin</span></code>添加到<code class="docutils literal notranslate"><span class="pre">PATH</span></code>环境变量中。这是必需的，因为<code class="docutils literal notranslate"><span class="pre">$env{&lt;variable-name&gt;}</span></code>不允许循环引用。</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">$vendor{&lt;macro-name&gt;}</span></code></dt><dd><p>一个扩展点，供供应商插入他们自己的宏。CMake将不能使用带有<code class="docutils literal notranslate"><span class="pre">$vendor{&lt;macro-name&gt;}</span></code>宏的预置，并且会有效地忽略这些预置。但是，它仍然可以使用同一文件中的其他预设。</p>
+<p>CMake不会尝试解释<code class="docutils literal notranslate"><span class="pre">$vendor{&lt;macro-name&gt;}</span></code>宏。但是，为了避免名称冲突，IDE供应商应该在<code class="docutils literal notranslate"><span class="pre">&lt;macro-name&gt;</span></code>前面加上一个非常短的（最好是&lt;=4个字符）供应商标识符前缀，后跟一个<code class="docutils literal notranslate"><span class="pre">.</span></code>，再后跟宏名称。例如，示例IDE可以有<code class="docutils literal notranslate"><span class="pre">$vendor{xide.ideInstallDir}</span></code>。</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="id12">
+<h2><a class="toc-backref" href="#id24" role="doc-backlink">模式</a><a class="headerlink" href="#id12" title="Link to this heading">¶</a></h2>
+<p><a class="reference download internal" download="" href="../_downloads/3e2d73bff478d88a7de0de736ba5e361/schema.json"><code class="xref download docutils literal notranslate"><span class="pre">This</span> <span class="pre">file</span></code></a>为<code class="docutils literal notranslate"><span class="pre">CMakePresets.json</span></code>格式提供了一个机器可读的JSON模式。</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">目录</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">cmake-presets(7)</a><ul>
+<li><a class="reference internal" href="#id2">引言</a></li>
+<li><a class="reference internal" href="#id3">格式</a><ul>
+<li><a class="reference internal" href="#id4">包含</a></li>
+<li><a class="reference internal" href="#id5">配置预设</a></li>
+<li><a class="reference internal" href="#id6">构建预设</a></li>
+<li><a class="reference internal" href="#id7">测试预设</a></li>
+<li><a class="reference internal" href="#id8">包预设</a></li>
+<li><a class="reference internal" href="#workflow-preset">工作流预设</a></li>
+<li><a class="reference internal" href="#id10">条件</a></li>
+<li><a class="reference internal" href="#id11">宏扩展</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id12">模式</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>上一主题</h4>
+    <p class="topless"><a href="../policy/CMP0000.html"
+                          title="上一章">CMP0000</a></p>
+  </div>
+  <div>
+    <h4>下一主题</h4>
+    <p class="topless"><a href="cmake-properties.7.html"
+                          title="下一章">cmake-properties(7)</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>本页</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/manual/cmake-presets.7.rst.txt"
+            rel="nofollow">显示源代码</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">快速搜索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="提交" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="总索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="cmake-properties.7.html" title="cmake-properties(7)"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="../policy/CMP0000.html" title="CMP0000"
+             >上一页</a> |</li>
+  <li>
+    <img src="../_static/cmake-logo-16.png" alt=""
+         style="vertical-align: middle; margin-top: -2px" />
+  </li>
+  <li>
+    <a href="https://cmake.org/">CMake</a> &#187;
+  </li>
+  <li>
+    <a href="../index.html">3.29.1-g21d0c57 Documentation</a> &#187;
+  </li>
+
+        <li class="nav-item nav-item-this"><a href="">cmake-presets(7)</a></li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+    &#169; 版权所有 2000-2024 Kitware, Inc. and Contributors.
+      由 <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6创建。
+    </div>
+  </body>
+</html>

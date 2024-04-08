@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>PROCESSOR_AFFINITY &mdash; CMake 3.29.1-g21d0c57 Documentation</title>
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a2c47e09" />
+    <link rel="stylesheet" type="text/css" href="../_static/cmake.css?v=3e562cf9" />
+    
+    <script src="../_static/documentation_options.js?v=17f7ec5f"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=beaddf03"></script>
+    
+    <link rel="icon" href="../_static/cmake-favicon.ico"/>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="PROCESSORS" href="PROCESSORS.html" />
+    <link rel="prev" title="PASS_REGULAR_EXPRESSION" href="PASS_REGULAR_EXPRESSION.html" />
+ 
+
+  </head><body>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="总索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="PROCESSORS.html" title="PROCESSORS"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="PASS_REGULAR_EXPRESSION.html" title="PASS_REGULAR_EXPRESSION"
+             accesskey="P">上一页</a> |</li>
+  <li>
+    <img src="../_static/cmake-logo-16.png" alt=""
+         style="vertical-align: middle; margin-top: -2px" />
+  </li>
+  <li>
+    <a href="https://cmake.org/">CMake</a> &#187;
+  </li>
+  <li>
+    <a href="../index.html">3.29.1-g21d0c57 Documentation</a> &#187;
+  </li>
+
+          <li class="nav-item nav-item-1"><a href="../manual/cmake-properties.7.html" accesskey="U">cmake-properties(7)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">PROCESSOR_AFFINITY</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="processor-affinity">
+<span id="prop_test:PROCESSOR_AFFINITY"></span><h1>PROCESSOR_AFFINITY<a class="headerlink" href="#processor-affinity" title="Link to this heading">¶</a></h1>
+<div class="versionadded">
+<p><span class="versionmodified added">在 3.12 版本加入.</span></p>
+</div>
+<p>设置为true值，以要求CTest为一组固定的处理器启动具有CPU亲和力的测试进程。如果当前平台启用并支持CTest，则在启动测试进程时，CTest将选择一组处理器放置在CPU亲和掩码中。集合中的处理器数量由<span class="target" id="index-0-prop_test:PROCESSORS"></span><a class="reference internal" href="PROCESSORS.html#prop_test:PROCESSORS" title="PROCESSORS"><code class="xref cmake cmake-prop_test docutils literal notranslate"><span class="pre">PROCESSORS</span></code></a>测试属性或CTest可用的处理器数量决定，以较小者为准。所选择的处理器集将与分配给其他并发运行的测试的处理器分离，这些测试也启用了<code class="docutils literal notranslate"><span class="pre">PROCESSOR_AFFINITY</span></code>属性。</p>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h4>上一主题</h4>
+    <p class="topless"><a href="PASS_REGULAR_EXPRESSION.html"
+                          title="上一章">PASS_REGULAR_EXPRESSION</a></p>
+  </div>
+  <div>
+    <h4>下一主题</h4>
+    <p class="topless"><a href="PROCESSORS.html"
+                          title="下一章">PROCESSORS</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>本页</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/prop_test/PROCESSOR_AFFINITY.rst.txt"
+            rel="nofollow">显示源代码</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">快速搜索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="提交" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="总索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="PROCESSORS.html" title="PROCESSORS"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="PASS_REGULAR_EXPRESSION.html" title="PASS_REGULAR_EXPRESSION"
+             >上一页</a> |</li>
+  <li>
+    <img src="../_static/cmake-logo-16.png" alt=""
+         style="vertical-align: middle; margin-top: -2px" />
+  </li>
+  <li>
+    <a href="https://cmake.org/">CMake</a> &#187;
+  </li>
+  <li>
+    <a href="../index.html">3.29.1-g21d0c57 Documentation</a> &#187;
+  </li>
+
+          <li class="nav-item nav-item-1"><a href="../manual/cmake-properties.7.html" >cmake-properties(7)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">PROCESSOR_AFFINITY</a></li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+    &#169; 版权所有 2000-2024 Kitware, Inc. and Contributors.
+      由 <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6创建。
+    </div>
+  </body>
+</html>

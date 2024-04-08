@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>步骤3：添加库的使用需求 &mdash; CMake 3.29.1-g21d0c57 Documentation</title>
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a2c47e09" />
+    <link rel="stylesheet" type="text/css" href="../../_static/cmake.css?v=3e562cf9" />
+    
+    <script src="../../_static/documentation_options.js?v=17f7ec5f"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/translations.js?v=beaddf03"></script>
+    
+    <link rel="icon" href="../../_static/cmake-favicon.ico"/>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="步骤4：添加生成器表达式" href="Adding%20Generator%20Expressions.html" />
+    <link rel="prev" title="步骤2：添加库" href="Adding%20a%20Library.html" />
+ 
+
+  </head><body>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="Adding%20Generator%20Expressions.html" title="步骤4：添加生成器表达式"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="Adding%20a%20Library.html" title="步骤2：添加库"
+             accesskey="P">上一页</a> |</li>
+  <li>
+    <img src="../../_static/cmake-logo-16.png" alt=""
+         style="vertical-align: middle; margin-top: -2px" />
+  </li>
+  <li>
+    <a href="https://cmake.org/">CMake</a> &#187;
+  </li>
+  <li>
+    <a href="../../index.html">3.29.1-g21d0c57 Documentation</a> &#187;
+  </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">CMake教程</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">步骤3：添加库的使用需求</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="guide:tutorial/Adding Usage Requirements for a Library">
+<span id="id1"></span><h1>步骤3：添加库的使用需求<a class="headerlink" href="#guide:tutorial/Adding Usage Requirements for a Library" title="Link to this heading">¶</a></h1>
+<section id="id2">
+<h2>练习1 - 为库添加使用需求<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<p>目标参数的<a class="reference internal" href="../../manual/cmake-buildsystem.7.html#target-usage-requirements"><span class="std std-ref">使用需求</span></a>允许对库或可执行文件的link和include行进行更好的控制，同时也可以对CMake内部目标的传递属性进行更多的控制。利用使用需求的主要命令有：</p>
+<ul class="simple">
+<li><p><span class="target" id="index-0-command:target_compile_definitions"></span><a class="reference internal" href="../../command/target_compile_definitions.html#command:target_compile_definitions" title="target_compile_definitions"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_definitions()</span></code></a></p></li>
+<li><p><span class="target" id="index-0-command:target_compile_options"></span><a class="reference internal" href="../../command/target_compile_options.html#command:target_compile_options" title="target_compile_options"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_options()</span></code></a></p></li>
+<li><p><span class="target" id="index-0-command:target_include_directories"></span><a class="reference internal" href="../../command/target_include_directories.html#command:target_include_directories" title="target_include_directories"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_include_directories()</span></code></a></p></li>
+<li><p><span class="target" id="index-0-command:target_link_directories"></span><a class="reference internal" href="../../command/target_link_directories.html#command:target_link_directories" title="target_link_directories"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_link_directories()</span></code></a></p></li>
+<li><p><span class="target" id="index-0-command:target_link_options"></span><a class="reference internal" href="../../command/target_link_options.html#command:target_link_options" title="target_link_options"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_link_options()</span></code></a></p></li>
+<li><p><span class="target" id="index-0-command:target_precompile_headers"></span><a class="reference internal" href="../../command/target_precompile_headers.html#command:target_precompile_headers" title="target_precompile_headers"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_precompile_headers()</span></code></a></p></li>
+<li><p><span class="target" id="index-0-command:target_sources"></span><a class="reference internal" href="../../command/target_sources.html#command:target_sources" title="target_sources"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_sources()</span></code></a></p></li>
+</ul>
+<section id="id3">
+<h3>目标<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<p>为库添加使用需求。</p>
+</section>
+<section id="id4">
+<h3>有用的材料<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><span class="target" id="index-0-variable:CMAKE_CURRENT_SOURCE_DIR"></span><a class="reference internal" href="../../variable/CMAKE_CURRENT_SOURCE_DIR.html#variable:CMAKE_CURRENT_SOURCE_DIR" title="CMAKE_CURRENT_SOURCE_DIR"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_CURRENT_SOURCE_DIR</span></code></a></p></li>
+</ul>
+</section>
+<section id="id5">
+<h3>待编辑的文件<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">MathFunctions/CMakeLists.txt</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code></p></li>
+</ul>
+</section>
+<section id="id6">
+<h3>开始<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
+<p>在本练习中，我们将使用现代的CMake方法重构<a class="reference internal" href="Adding%20a%20Library.html#guide:tutorial/Adding a Library" title="tutorial/Adding a Library"><code class="xref cmake cmake-guide docutils literal notranslate"><span class="pre">添加库</span></code></a>中的代码。我们将让我们的库定义自己的使用需求，以便在必要时将它们传递给其他目标。在本例中，<code class="docutils literal notranslate"><span class="pre">MathFunctions</span></code>将自己指定任何所需的include目录。然后，消费目标<code class="docutils literal notranslate"><span class="pre">Tutorial</span></code>只需要链接到<code class="docutils literal notranslate"><span class="pre">MathFunctions</span></code>，而不用担心任何额外的包含目录。</p>
+<p>在<code class="docutils literal notranslate"><span class="pre">Step3</span></code>目录中提供了起始源代码。在这个练习中，完成<code class="docutils literal notranslate"><span class="pre">TODO</span> <span class="pre">1</span></code>到<code class="docutils literal notranslate"><span class="pre">TODO</span> <span class="pre">3</span></code>。</p>
+<p>首先，在<code class="docutils literal notranslate"><span class="pre">MathFunctions/CMakeLists</span></code>中添加对<span class="target" id="index-1-command:target_include_directories"></span><a class="reference internal" href="../../command/target_include_directories.html#command:target_include_directories" title="target_include_directories"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_include_directories()</span></code></a>的调用。请记住，<span class="target" id="index-1-variable:CMAKE_CURRENT_SOURCE_DIR"></span><a class="reference internal" href="../../variable/CMAKE_CURRENT_SOURCE_DIR.html#variable:CMAKE_CURRENT_SOURCE_DIR" title="CMAKE_CURRENT_SOURCE_DIR"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_CURRENT_SOURCE_DIR</span></code></a>是当前正在处理的源目录的路径。</p>
+<p>然后，更新（并简化！）顶层<code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>中对<span class="target" id="index-2-command:target_include_directories"></span><a class="reference internal" href="../../command/target_include_directories.html#command:target_include_directories" title="target_include_directories"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_include_directories()</span></code></a>的调用。</p>
+</section>
+<section id="id7">
+<h3>构建并运行<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
+<p>创建一个名为<code class="docutils literal notranslate"><span class="pre">Step3_build</span></code>的新目录，运行<span class="target" id="index-0-manual:cmake(1)"></span><a class="reference internal" href="../../manual/cmake.1.html#manual:cmake(1)" title="cmake(1)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">cmake</span></code></a>可执行文件或<span class="target" id="index-0-manual:cmake-gui(1)"></span><a class="reference internal" href="../../manual/cmake-gui.1.html#manual:cmake-gui(1)" title="cmake-gui(1)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">cmake-gui</span></code></a>来配置项目，然后使用你选择的构建工具或使用<a class="reference internal" href="../../manual/cmake.1.html#cmdoption-cmake-build"><code class="xref std std-option docutils literal notranslate"><span class="pre">cmake</span> <span class="pre">--build</span> <span class="pre">.</span></code></a>来从构建目录构建它。下面是命令行的更新：</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">mkdir Step3_build</span>
+<span class="go">cd Step3_build</span>
+<span class="go">cmake ../Step3</span>
+<span class="go">cmake --build .</span>
+</pre></div>
+</div>
+<p>接下来，使用新构建的<code class="docutils literal notranslate"><span class="pre">Tutorial</span></code>并验证它是否按预期工作。</p>
+</section>
+<section id="id8">
+<h3>解决方案<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h3>
+<p>让我们更新上一步中的代码，以使用现代CMake方法来满足使用需求。</p>
+<p>我们想声明的是，任何链接到<code class="docutils literal notranslate"><span class="pre">MathFunctions</span></code>的人都需要包含当前源目录，而<code class="docutils literal notranslate"><span class="pre">MathFunctions</span></code>本身则不需要。这可以用<code class="docutils literal notranslate"><span class="pre">INTERFACE</span></code>使用需求来表示。记住，<code class="docutils literal notranslate"><span class="pre">INTERFACE</span></code>指的是消费者需要但生产者不需要的东西。</p>
+<p>在<code class="docutils literal notranslate"><span class="pre">MathFunctions/CMakeLists.txt</span></code>的末尾，使用带<code class="docutils literal notranslate"><span class="pre">INTERFACE</span></code>关键字的<span class="target" id="index-3-command:target_include_directories"></span><a class="reference internal" href="../../command/target_include_directories.html#command:target_include_directories" title="target_include_directories"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_include_directories()</span></code></a>，如下所示：</p>
+<details><summary>TODO 1: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="mathfunctions-cmakelists-txt-target-include-directories-interface">
+<div class="code-block-caption"><span class="caption-text">TODO 1: MathFunctions/CMakeLists.txt</span><a class="headerlink" href="#mathfunctions-cmakelists-txt-target-include-directories-interface" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">target_include_directories(</span><span class="nb">MathFunctions</span>
+<span class="w">                           </span><span class="no">INTERFACE</span><span class="w"> </span><span class="o">${</span><span class="nt">CMAKE_CURRENT_SOURCE_DIR</span><span class="o">}</span>
+<span class="w">                           </span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details><p>既然我们已经指定了<code class="docutils literal notranslate"><span class="pre">MathFunctions</span></code>的使用要求，就可以安全地从顶层文件<code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>中删除<code class="docutils literal notranslate"><span class="pre">EXTRA_INCLUDES</span></code>变量了。</p>
+<p>删除这一行：</p>
+<details><summary>TODO 2: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="cmakelists-txt-remove-extra-includes">
+<div class="code-block-caption"><span class="caption-text">TODO 2: CMakeLists.txt</span><a class="headerlink" href="#cmakelists-txt-remove-extra-includes" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">list(</span><span class="no">APPEND</span><span class="w"> </span><span class="no">EXTRA_INCLUDES</span><span class="w"> </span><span class="s">&quot;${PROJECT_SOURCE_DIR}/MathFunctions&quot;</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details><p>并从<code class="docutils literal notranslate"><span class="pre">target_include_directories</span></code>中删除<code class="docutils literal notranslate"><span class="pre">EXTRA_INCLUDES</span></code>：</p>
+<details><summary>TODO 3: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="cmakelists-txt-target-include-directories-remove-extra-includes">
+<div class="code-block-caption"><span class="caption-text">TODO 3: CMakeLists.txt</span><a class="headerlink" href="#cmakelists-txt-target-include-directories-remove-extra-includes" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">target_include_directories(</span><span class="nb">Tutorial</span><span class="w"> </span><span class="no">PUBLIC</span>
+<span class="w">                           </span><span class="s">&quot;${PROJECT_BINARY_DIR}&quot;</span>
+<span class="w">                           </span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details><p>注意，使用这种技术，我们的可执行目标使用我们的库所做的唯一事情就是用库目标的名称调用<span class="target" id="index-0-command:target_link_libraries"></span><a class="reference internal" href="../../command/target_link_libraries.html#command:target_link_libraries" title="target_link_libraries"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_link_libraries()</span></code></a>。在较大的项目中，手动指定库依赖项的经典方法很快就会变得非常复杂。</p>
+</section>
+</section>
+<section id="c">
+<h2>练习2 - 用接口库设置C++标准<a class="headerlink" href="#c" title="Link to this heading">¶</a></h2>
+<p>既然我们已经将代码转换为更现代的方法，那么让我们演示一种为多个目标设置属性的现代技术。</p>
+<p>让我们重构现有代码以使用<code class="docutils literal notranslate"><span class="pre">INTERFACE</span></code>库。我们将在下一步中使用该库来演示<span class="target" id="index-0-manual:cmake-generator-expressions(7)"></span><a class="reference internal" href="../../manual/cmake-generator-expressions.7.html#manual:cmake-generator-expressions(7)" title="cmake-generator-expressions(7)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">生成器表达式</span></code></a>的常见用法。</p>
+<section id="id9">
+<h3>目标<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h3>
+<p>添加一个<code class="docutils literal notranslate"><span class="pre">INTERFACE</span></code>库目标来指定所需的C++标准。</p>
+</section>
+<section id="id10">
+<h3>有用的资源<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><span class="target" id="index-0-command:add_library"></span><a class="reference internal" href="../../command/add_library.html#command:add_library" title="add_library"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">add_library()</span></code></a></p></li>
+<li><p><span class="target" id="index-0-command:target_compile_features"></span><a class="reference internal" href="../../command/target_compile_features.html#command:target_compile_features" title="target_compile_features"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_features()</span></code></a></p></li>
+<li><p><span class="target" id="index-1-command:target_link_libraries"></span><a class="reference internal" href="../../command/target_link_libraries.html#command:target_link_libraries" title="target_link_libraries"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_link_libraries()</span></code></a></p></li>
+</ul>
+</section>
+<section id="id11">
+<h3>待编辑的文件<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MathFunctions/CMakeLists.txt</span></code></p></li>
+</ul>
+</section>
+<section id="id12">
+<h3>开始<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h3>
+<p>在本练习中，我们将重构代码，使用<code class="docutils literal notranslate"><span class="pre">INTERFACE</span></code>库指定C++标准。</p>
+<p>从我们在步骤3练习1结束时留下的内容开始这个练习。你必须完成<code class="docutils literal notranslate"><span class="pre">TODO</span> <span class="pre">4</span></code>到<code class="docutils literal notranslate"><span class="pre">TODO</span> <span class="pre">7</span></code>。</p>
+<p>首先编辑顶层的<code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>文件。构造一个名为<code class="docutils literal notranslate"><span class="pre">tutorial_compiler_flags</span></code>的<code class="docutils literal notranslate"><span class="pre">INTERFACE</span></code>库目标，并指定<code class="docutils literal notranslate"><span class="pre">cxx_std_11</span></code>作为目标编译器特性。</p>
+<p>修改<code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>和<code class="docutils literal notranslate"><span class="pre">MathFunctions/CMakeLists.txt</span></code>，以便所有目标都有一个<span class="target" id="index-2-command:target_link_libraries"></span><a class="reference internal" href="../../command/target_link_libraries.html#command:target_link_libraries" title="target_link_libraries"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_link_libraries()</span></code></a>调用<code class="docutils literal notranslate"><span class="pre">tutorial_compiler_flags</span></code>。</p>
+</section>
+<section id="id13">
+<h3>构建并运行<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h3>
+<p>由于我们已经在练习1中配置了构建目录，只需通过调用以下命令重新构建代码：</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd Step3_build</span>
+<span class="go">cmake --build .</span>
+</pre></div>
+</div>
+<p>接下来，使用新构建的<code class="docutils literal notranslate"><span class="pre">Tutorial</span></code>并验证它是否按预期工作。</p>
+</section>
+<section id="id14">
+<h3>解决方案<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h3>
+<p>让我们更新上一步的代码，使用接口库来设置C++需求。</p>
+<p>首先，我们需要删除变量<span class="target" id="index-0-variable:CMAKE_CXX_STANDARD"></span><a class="reference internal" href="../../variable/CMAKE_CXX_STANDARD.html#variable:CMAKE_CXX_STANDARD" title="CMAKE_CXX_STANDARD"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_CXX_STANDARD</span></code></a>和<span class="target" id="index-0-variable:CMAKE_CXX_STANDARD_REQUIRED"></span><a class="reference internal" href="../../variable/CMAKE_CXX_STANDARD_REQUIRED.html#variable:CMAKE_CXX_STANDARD_REQUIRED" title="CMAKE_CXX_STANDARD_REQUIRED"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_CXX_STANDARD_REQUIRED</span></code></a>上的两个<span class="target" id="index-0-command:set"></span><a class="reference internal" href="../../command/set.html#command:set" title="set"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">set()</span></code></a>调用。具体要删除的行如下：</p>
+<div class="literal-block-wrapper docutils container" id="cmakelists-txt-cxx-standard-variable-remove">
+<div class="code-block-caption"><span class="caption-text">CMakeLists.txt</span><a class="headerlink" href="#cmakelists-txt-cxx-standard-variable-remove" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">set(</span><span class="no">CMAKE_CXX_STANDARD</span><span class="w"> </span><span class="m">11</span><span class="nf">)</span>
+<span class="nf">set(</span><span class="no">CMAKE_CXX_STANDARD_REQUIRED</span><span class="w"> </span><span class="nb">True</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+<p>接下来，我们需要创建一个接口库<code class="docutils literal notranslate"><span class="pre">tutorial_compiler_flags</span></code>。然后使用<span class="target" id="index-1-command:target_compile_features"></span><a class="reference internal" href="../../command/target_compile_features.html#command:target_compile_features" title="target_compile_features"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_features()</span></code></a>来添加编译器特性<code class="docutils literal notranslate"><span class="pre">cxx_std_11</span></code>。</p>
+<details><summary>TODO 4: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="cmakelists-txt-cxx-std-feature">
+<div class="code-block-caption"><span class="caption-text">TODO 4: CMakeLists.txt</span><a class="headerlink" href="#cmakelists-txt-cxx-std-feature" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">add_library(</span><span class="nb">tutorial_compiler_flags</span><span class="w"> </span><span class="no">INTERFACE</span><span class="nf">)</span>
+<span class="nf">target_compile_features(</span><span class="nb">tutorial_compiler_flags</span><span class="w"> </span><span class="no">INTERFACE</span><span class="w"> </span><span class="nb">cxx_std_11</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details><p>最后，设置好接口库后，我们需要将可执行<code class="docutils literal notranslate"><span class="pre">Tutorial</span></code>、<code class="docutils literal notranslate"><span class="pre">SqrtLibrary</span></code>库和<code class="docutils literal notranslate"><span class="pre">MathFunctions</span></code>库链接到新的<code class="docutils literal notranslate"><span class="pre">tutorial_compiler_flags</span></code>库。分别，代码分别如下这样：</p>
+<details><summary>TODO 5: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="cmakelists-txt-target-link-libraries-step4">
+<div class="code-block-caption"><span class="caption-text">TODO 5: CMakeLists.txt</span><a class="headerlink" href="#cmakelists-txt-target-link-libraries-step4" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">target_link_libraries(</span><span class="nb">Tutorial</span><span class="w"> </span><span class="no">PUBLIC</span><span class="w"> </span><span class="nb">MathFunctions</span><span class="w"> </span><span class="nb">tutorial_compiler_flags</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details><p>这样：</p>
+<details><summary>TODO 6: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="mathfunctions-cmakelists-txt-target-link-libraries-step4">
+<div class="code-block-caption"><span class="caption-text">TODO 6: MathFunctions/CMakeLists.txt</span><a class="headerlink" href="#mathfunctions-cmakelists-txt-target-link-libraries-step4" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nf">target_link_libraries(</span><span class="nb">SqrtLibrary</span><span class="w"> </span><span class="no">PUBLIC</span><span class="w"> </span><span class="nb">tutorial_compiler_flags</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details><p>和这样：</p>
+<details><summary>TODO 7: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="mathfunctions-sqrtlibrary-target-link-libraries-step4">
+<div class="code-block-caption"><span class="caption-text">TODO 7: MathFunctions/CMakeLists.txt</span><a class="headerlink" href="#mathfunctions-sqrtlibrary-target-link-libraries-step4" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">target_link_libraries(</span><span class="nb">MathFunctions</span><span class="w"> </span><span class="no">PUBLIC</span><span class="w"> </span><span class="nb">tutorial_compiler_flags</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details><p>尽管如此，我们所有的代码仍然需要C++11来构建。注意，使用这种方法，我们可以明确哪些目标需要特定的需求。此外，我们在接口库中创建了一个单一的事实来源。</p>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../../index.html">目录</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">步骤3：添加库的使用需求</a><ul>
+<li><a class="reference internal" href="#id2">练习1 - 为库添加使用需求</a><ul>
+<li><a class="reference internal" href="#id3">目标</a></li>
+<li><a class="reference internal" href="#id4">有用的材料</a></li>
+<li><a class="reference internal" href="#id5">待编辑的文件</a></li>
+<li><a class="reference internal" href="#id6">开始</a></li>
+<li><a class="reference internal" href="#id7">构建并运行</a></li>
+<li><a class="reference internal" href="#id8">解决方案</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#c">练习2 - 用接口库设置C++标准</a><ul>
+<li><a class="reference internal" href="#id9">目标</a></li>
+<li><a class="reference internal" href="#id10">有用的资源</a></li>
+<li><a class="reference internal" href="#id11">待编辑的文件</a></li>
+<li><a class="reference internal" href="#id12">开始</a></li>
+<li><a class="reference internal" href="#id13">构建并运行</a></li>
+<li><a class="reference internal" href="#id14">解决方案</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>上一主题</h4>
+    <p class="topless"><a href="Adding%20a%20Library.html"
+                          title="上一章">步骤2：添加库</a></p>
+  </div>
+  <div>
+    <h4>下一主题</h4>
+    <p class="topless"><a href="Adding%20Generator%20Expressions.html"
+                          title="下一章">步骤4：添加生成器表达式</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>本页</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/guide/tutorial/Adding Usage Requirements for a Library.rst.txt"
+            rel="nofollow">显示源代码</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">快速搜索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="提交" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="Adding%20Generator%20Expressions.html" title="步骤4：添加生成器表达式"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="Adding%20a%20Library.html" title="步骤2：添加库"
+             >上一页</a> |</li>
+  <li>
+    <img src="../../_static/cmake-logo-16.png" alt=""
+         style="vertical-align: middle; margin-top: -2px" />
+  </li>
+  <li>
+    <a href="https://cmake.org/">CMake</a> &#187;
+  </li>
+  <li>
+    <a href="../../index.html">3.29.1-g21d0c57 Documentation</a> &#187;
+  </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >CMake教程</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">步骤3：添加库的使用需求</a></li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+    &#169; 版权所有 2000-2024 Kitware, Inc. and Contributors.
+      由 <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6创建。
+    </div>
+  </body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>步骤6: 添加对测试仪表板的支持 &mdash; CMake 3.29.1-g21d0c57 Documentation</title>
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a2c47e09" />
+    <link rel="stylesheet" type="text/css" href="../../_static/cmake.css?v=3e562cf9" />
+    
+    <script src="../../_static/documentation_options.js?v=17f7ec5f"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/translations.js?v=beaddf03"></script>
+    
+    <link rel="icon" href="../../_static/cmake-favicon.ico"/>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="步骤7: 添加系统自省" href="Adding%20System%20Introspection.html" />
+    <link rel="prev" title="步骤5: 安装和测试" href="Installing%20and%20Testing.html" />
+ 
+
+  </head><body>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="Adding%20System%20Introspection.html" title="步骤7: 添加系统自省"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="Installing%20and%20Testing.html" title="步骤5: 安装和测试"
+             accesskey="P">上一页</a> |</li>
+  <li>
+    <img src="../../_static/cmake-logo-16.png" alt=""
+         style="vertical-align: middle; margin-top: -2px" />
+  </li>
+  <li>
+    <a href="https://cmake.org/">CMake</a> &#187;
+  </li>
+  <li>
+    <a href="../../index.html">3.29.1-g21d0c57 Documentation</a> &#187;
+  </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">CMake教程</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">步骤6: 添加对测试仪表板的支持</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="guide:tutorial/Adding Support for a Testing Dashboard">
+<span id="id1"></span><h1>步骤6: 添加对测试仪表板的支持<a class="headerlink" href="#guide:tutorial/Adding Support for a Testing Dashboard" title="Link to this heading">¶</a></h1>
+<p>添加向仪表板提交测试结果的支持很简单。我们已经在<a class="reference internal" href="Installing%20and%20Testing.html#tutorial-testing-support"><span class="std std-ref">测试支持</span></a>中为我们的项目定义了许多测试。现在我们只需要运行这些测试并提交给CDash。</p>
+<section id="id2">
+<h2>练习1 - 将结果发送到测试仪表板<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<section id="id3">
+<h3>目标<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<p>使用CDash展示CTest结果。</p>
+</section>
+<section id="id4">
+<h3>有用的资源<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><span class="target" id="index-0-manual:ctest(1)"></span><a class="reference internal" href="../../manual/ctest.1.html#manual:ctest(1)" title="ctest(1)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">ctest(1)</span></code></a></p></li>
+<li><p><span class="target" id="index-0-command:include"></span><a class="reference internal" href="../../command/include.html#command:include" title="include"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">include()</span></code></a></p></li>
+<li><p><span class="target" id="index-0-module:CTest"></span><a class="reference internal" href="../../module/CTest.html#module:CTest" title="CTest"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">CTest</span></code></a></p></li>
+</ul>
+</section>
+<section id="id5">
+<h3>待编辑的文件<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code></p></li>
+</ul>
+</section>
+<section id="id6">
+<h3>开始<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
+<p>对于这个练习，通过包含<span class="target" id="index-1-module:CTest"></span><a class="reference internal" href="../../module/CTest.html#module:CTest" title="CTest"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">CTest</span></code></a>模块来完成顶层<code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>中的<code class="docutils literal notranslate"><span class="pre">TODO</span> <span class="pre">1</span></code>。这将允许使用CTest进行测试，并将仪表盘提交给CDash，因此我们可以安全地删除对<span class="target" id="index-0-command:enable_testing"></span><a class="reference internal" href="../../command/enable_testing.html#command:enable_testing" title="enable_testing"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">enable_testing()</span></code></a>的调用。</p>
+<p>我们还需要获取一个<code class="docutils literal notranslate"><span class="pre">CTestConfig.cmake</span></code>文件，将其放置在顶层目录中。运行的时候，<span class="target" id="index-1-manual:ctest(1)"></span><a class="reference internal" href="../../manual/ctest.1.html#manual:ctest(1)" title="ctest(1)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">ctest</span></code></a>可执行文件将读取该文件以收集有关测试仪表板的信息。它包含：</p>
+<ul class="simple">
+<li><p>项目名称</p></li>
+<li><p>项目“夜间”开始时间</p>
+<ul>
+<li><p>项目24小时“一天”开始的时间。</p></li>
+</ul>
+</li>
+<li><p>将在其中发送提交生成的文档的CDash实例的URL</p></li>
+</ul>
+<p>在本教程中，将使用一个公共仪表板服务器，并在此步骤的根目录中为你提供相应的<code class="docutils literal notranslate"><span class="pre">CTestConfig.cmake</span></code>文件。在实践中，这个文件将从用于承载测试结果的CDash实例上的项目<code class="docutils literal notranslate"><span class="pre">Settings</span></code>页面下载。从CDash下载后，不应该在本地修改该文件。</p>
+<div class="literal-block-wrapper docutils container" id="ctestconfig-cmake">
+<div class="code-block-caption"><span class="caption-text">CTestConfig.cmake</span><a class="headerlink" href="#ctestconfig-cmake" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">set(</span><span class="no">CTEST_PROJECT_NAME</span><span class="w"> </span><span class="s">&quot;CMakeTutorial&quot;</span><span class="nf">)</span>
+<span class="nf">set(</span><span class="no">CTEST_NIGHTLY_START_TIME</span><span class="w"> </span><span class="s">&quot;00:00:00 EST&quot;</span><span class="nf">)</span>
+
+<span class="nf">set(</span><span class="no">CTEST_DROP_METHOD</span><span class="w"> </span><span class="s">&quot;http&quot;</span><span class="nf">)</span>
+<span class="nf">set(</span><span class="no">CTEST_DROP_SITE</span><span class="w"> </span><span class="s">&quot;my.cdash.org&quot;</span><span class="nf">)</span>
+<span class="nf">set(</span><span class="no">CTEST_DROP_LOCATION</span><span class="w"> </span><span class="s">&quot;/submit.php?project=CMakeTutorial&quot;</span><span class="nf">)</span>
+<span class="nf">set(</span><span class="no">CTEST_DROP_SITE_CDASH</span><span class="w"> </span><span class="no">TRUE</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="id7">
+<h3>构建并运行<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
+<p>请注意，作为CDash提交的一部分，关于你的开发系统的一些信息（例如站点名称或完整路径名）可能会公开显示。</p>
+<p>要创建一个简单的测试仪表板，请运行<span class="target" id="index-0-manual:cmake(1)"></span><a class="reference internal" href="../../manual/cmake.1.html#manual:cmake(1)" title="cmake(1)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">cmake</span></code></a>可执行文件或<span class="target" id="index-0-manual:cmake-gui(1)"></span><a class="reference internal" href="../../manual/cmake-gui.1.html#manual:cmake-gui(1)" title="cmake-gui(1)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">cmake-gui</span></code></a>来配置项目，但先不要构建它。相反，导航到build目录并运行：</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ctest [-VV] -D Experimental</span>
+</pre></div>
+</div>
+<p>不要忘了，对于多配置的生成器（比如Visual Studio），配置必须指定：</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ctest [-VV] -C Debug -D Experimental</span>
+</pre></div>
+</div>
+<p>或者直接在IDE中编译<code class="docutils literal notranslate"><span class="pre">Experimental</span></code>目标。</p>
+<p><span class="target" id="index-2-manual:ctest(1)"></span><a class="reference internal" href="../../manual/ctest.1.html#manual:ctest(1)" title="ctest(1)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">ctest</span></code></a>可执行文件将构建项目，运行任何测试，并将结果提交到Kitware的公共仪表板：<a class="reference external" href="https://my.cdash.org/index.php?project=CMakeTutorial">https://my.cdash.org/index.php?project=CMakeTutorial</a>。</p>
+</section>
+<section id="id8">
+<h3>解决方案<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h3>
+<p>在这一步中唯一需要修改的CMake代码是通过在顶层的<code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>中包含<span class="target" id="index-2-module:CTest"></span><a class="reference internal" href="../../module/CTest.html#module:CTest" title="CTest"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">CTest</span></code></a>模块来启用仪表板提交到CDash：</p>
+<details><summary>TODO 1: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="cmakelists-txt-include-ctest">
+<div class="code-block-caption"><span class="caption-text">TODO 1: CMakeLists.txt</span><a class="headerlink" href="#cmakelists-txt-include-ctest" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">include(</span><span class="nb">CTest</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details></section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../../index.html">目录</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">步骤6: 添加对测试仪表板的支持</a><ul>
+<li><a class="reference internal" href="#id2">练习1 - 将结果发送到测试仪表板</a><ul>
+<li><a class="reference internal" href="#id3">目标</a></li>
+<li><a class="reference internal" href="#id4">有用的资源</a></li>
+<li><a class="reference internal" href="#id5">待编辑的文件</a></li>
+<li><a class="reference internal" href="#id6">开始</a></li>
+<li><a class="reference internal" href="#id7">构建并运行</a></li>
+<li><a class="reference internal" href="#id8">解决方案</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>上一主题</h4>
+    <p class="topless"><a href="Installing%20and%20Testing.html"
+                          title="上一章">步骤5: 安装和测试</a></p>
+  </div>
+  <div>
+    <h4>下一主题</h4>
+    <p class="topless"><a href="Adding%20System%20Introspection.html"
+                          title="下一章">步骤7: 添加系统自省</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>本页</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/guide/tutorial/Adding Support for a Testing Dashboard.rst.txt"
+            rel="nofollow">显示源代码</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">快速搜索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="提交" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="Adding%20System%20Introspection.html" title="步骤7: 添加系统自省"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="Installing%20and%20Testing.html" title="步骤5: 安装和测试"
+             >上一页</a> |</li>
+  <li>
+    <img src="../../_static/cmake-logo-16.png" alt=""
+         style="vertical-align: middle; margin-top: -2px" />
+  </li>
+  <li>
+    <a href="https://cmake.org/">CMake</a> &#187;
+  </li>
+  <li>
+    <a href="../../index.html">3.29.1-g21d0c57 Documentation</a> &#187;
+  </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >CMake教程</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">步骤6: 添加对测试仪表板的支持</a></li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+    &#169; 版权所有 2000-2024 Kitware, Inc. and Contributors.
+      由 <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6创建。
+    </div>
+  </body>
+</html>

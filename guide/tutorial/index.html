@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>CMake教程 &mdash; CMake 3.29.1-g21d0c57 Documentation</title>
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a2c47e09" />
+    <link rel="stylesheet" type="text/css" href="../../_static/cmake.css?v=3e562cf9" />
+    
+    <script src="../../_static/documentation_options.js?v=17f7ec5f"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/translations.js?v=beaddf03"></script>
+    
+    <link rel="icon" href="../../_static/cmake-favicon.ico"/>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="步骤1：一个基本的起点" href="A%20Basic%20Starting%20Point.html" />
+    <link rel="prev" title="CPack WIX Generator" href="../../cpack_gen/wix.html" />
+ 
+
+  </head><body>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="A%20Basic%20Starting%20Point.html" title="步骤1：一个基本的起点"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="../../cpack_gen/wix.html" title="CPack WIX Generator"
+             accesskey="P">上一页</a> |</li>
+  <li>
+    <img src="../../_static/cmake-logo-16.png" alt=""
+         style="vertical-align: middle; margin-top: -2px" />
+  </li>
+  <li>
+    <a href="https://cmake.org/">CMake</a> &#187;
+  </li>
+  <li>
+    <a href="../../index.html">3.29.1-g21d0c57 Documentation</a> &#187;
+  </li>
+
+        <li class="nav-item nav-item-this"><a href="">CMake教程</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="cmake">
+<span id="guide:CMake教程"></span><h1>CMake教程<a class="headerlink" href="#cmake" title="Link to this heading">¶</a></h1>
+<section id="id1">
+<h2>引言<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<p>CMake教程提供了一个循序渐进的指南，涵盖了CMake帮助解决的常见构建系统问题。看各种各样的话题在一个示例项目中一起工作是非常有用的。</p>
+</section>
+<section id="id2">
+<h2>步骤<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<p>此教程的文档与源码例子可以在CMake的源码树的<code class="docutils literal notranslate"><span class="pre">Help/guide/tutorial</span></code>目录找到。每个步骤都有自己的子目录，其中包含可以用作起点的代码。教程的例子是循序渐进的，所以每一步都是如此为上一步提供完整的解决方案。</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="A%20Basic%20Starting%20Point.html">步骤1：一个基本的起点</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="A%20Basic%20Starting%20Point.html#id2">练习1 - 创建一个基本项目</a></li>
+<li class="toctree-l2"><a class="reference internal" href="A%20Basic%20Starting%20Point.html#c">练习2 - 指定c++标准</a></li>
+<li class="toctree-l2"><a class="reference internal" href="A%20Basic%20Starting%20Point.html#id15">练习3 - 添加版本号和配置的头文件</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Adding%20a%20Library.html">步骤2：添加库</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Adding%20a%20Library.html#id2">练习1 - 创建一个库</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Adding%20a%20Library.html#id9">练习2 - 添加选项</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Adding%20Usage%20Requirements%20for%20a%20Library.html">步骤3：添加库的使用需求</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Adding%20Usage%20Requirements%20for%20a%20Library.html#id2">练习1 - 为库添加使用需求</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Adding%20Usage%20Requirements%20for%20a%20Library.html#c">练习2 - 用接口库设置C++标准</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Adding%20Generator%20Expressions.html">步骤4：添加生成器表达式</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Adding%20Generator%20Expressions.html#id2">练习1 - 在生成器表达式中添加编译器警告标志</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Installing%20and%20Testing.html">步骤5: 安装和测试</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Installing%20and%20Testing.html#id2">练习1 - 安装规则</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Installing%20and%20Testing.html#tutorial-testing-support">练习2 - 测试支持</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Adding%20Support%20for%20a%20Testing%20Dashboard.html">步骤6: 添加对测试仪表板的支持</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Adding%20Support%20for%20a%20Testing%20Dashboard.html#id2">练习1 - 将结果发送到测试仪表板</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Adding%20System%20Introspection.html">步骤7: 添加系统自省</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Adding%20System%20Introspection.html#id2">练习1 - 评估依赖项可用性</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Adding%20a%20Custom%20Command%20and%20Generated%20File.html">步骤8: 添加自定义命令和生成文件</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Packaging%20an%20Installer.html">步骤9: 打包一个安装包</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Selecting%20Static%20or%20Shared%20Libraries.html">步骤10: 选择使用静态库或共享库</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Adding%20Export%20Configuration.html">步骤11：添加导出配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Packaging%20Debug%20and%20Release.html">步骤12：打包调试和发布</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../../index.html">目录</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">CMake教程</a><ul>
+<li><a class="reference internal" href="#id1">引言</a></li>
+<li><a class="reference internal" href="#id2">步骤</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>上一主题</h4>
+    <p class="topless"><a href="../../cpack_gen/wix.html"
+                          title="上一章">CPack WIX Generator</a></p>
+  </div>
+  <div>
+    <h4>下一主题</h4>
+    <p class="topless"><a href="A%20Basic%20Starting%20Point.html"
+                          title="下一章">步骤1：一个基本的起点</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>本页</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/guide/tutorial/index.rst.txt"
+            rel="nofollow">显示源代码</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">快速搜索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="提交" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="A%20Basic%20Starting%20Point.html" title="步骤1：一个基本的起点"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="../../cpack_gen/wix.html" title="CPack WIX Generator"
+             >上一页</a> |</li>
+  <li>
+    <img src="../../_static/cmake-logo-16.png" alt=""
+         style="vertical-align: middle; margin-top: -2px" />
+  </li>
+  <li>
+    <a href="https://cmake.org/">CMake</a> &#187;
+  </li>
+  <li>
+    <a href="../../index.html">3.29.1-g21d0c57 Documentation</a> &#187;
+  </li>
+
+        <li class="nav-item nav-item-this"><a href="">CMake教程</a></li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+    &#169; 版权所有 2000-2024 Kitware, Inc. and Contributors.
+      由 <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6创建。
+    </div>
+  </body>
+</html>

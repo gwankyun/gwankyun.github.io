@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>步骤1：一个基本的起点 &mdash; CMake 3.29.1-g21d0c57 Documentation</title>
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a2c47e09" />
+    <link rel="stylesheet" type="text/css" href="../../_static/cmake.css?v=3e562cf9" />
+    
+    <script src="../../_static/documentation_options.js?v=17f7ec5f"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/translations.js?v=beaddf03"></script>
+    
+    <link rel="icon" href="../../_static/cmake-favicon.ico"/>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="步骤2：添加库" href="Adding%20a%20Library.html" />
+    <link rel="prev" title="CMake教程" href="index.html" />
+ 
+
+  </head><body>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="Adding%20a%20Library.html" title="步骤2：添加库"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="CMake教程"
+             accesskey="P">上一页</a> |</li>
+  <li>
+    <img src="../../_static/cmake-logo-16.png" alt=""
+         style="vertical-align: middle; margin-top: -2px" />
+  </li>
+  <li>
+    <a href="https://cmake.org/">CMake</a> &#187;
+  </li>
+  <li>
+    <a href="../../index.html">3.29.1-g21d0c57 Documentation</a> &#187;
+  </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">CMake教程</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">步骤1：一个基本的起点</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="guide:tutorial/A Basic Starting Point">
+<span id="id1"></span><h1>步骤1：一个基本的起点<a class="headerlink" href="#guide:tutorial/A Basic Starting Point" title="Link to this heading">¶</a></h1>
+<p>我从哪里开始使用CMake？这一步将介绍CMake的一些基本语法、命令和变量。随着这些概念的介绍，我们将完成三个练习并创建一个简单的CMake项目。</p>
+<p>这一步中的每个练习都将从一些背景信息开始。然后，提供了一个目标和有用的资源列表。<code class="docutils literal notranslate"><span class="pre">待编辑的文件</span></code>部分中的每个文件都位于<code class="docutils literal notranslate"><span class="pre">Step1</span></code>目录中，并包含一个或多个<code class="docutils literal notranslate"><span class="pre">TODO</span></code>注释。每个<code class="docutils literal notranslate"><span class="pre">TODO</span></code>表示要更改或添加的一到两行代码。这些<code class="docutils literal notranslate"><span class="pre">TODO</span></code>将按数字顺序完成，首先完成<code class="docutils literal notranslate"><span class="pre">TODO</span> <span class="pre">1</span></code>，然后完成<code class="docutils literal notranslate"><span class="pre">TODO</span> <span class="pre">2</span></code>，以此类推。<code class="docutils literal notranslate"><span class="pre">Getting</span> <span class="pre">Started</span></code>部分将提供一些有用的提示并指导你完成练习。然后，<code class="docutils literal notranslate"><span class="pre">Build</span> <span class="pre">and</span> <span class="pre">Run</span></code>部分将逐步介绍如何构建和测试该练习。最后，在每次练习结束时讨论预期的解决方案。</p>
+<p>还要注意，教程中的每个步骤都是建立在下一个步骤之上的。因此，如 <code class="docutils literal notranslate"><span class="pre">Step2</span></code>的开始代码就是<code class="docutils literal notranslate"><span class="pre">Step1</span></code>的完整解决方案。</p>
+<section id="id2">
+<h2>练习1 - 创建一个基本项目<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<p>最基本的CMake项目是从单个源代码文件构建的可执行文件。对于像这样的简单项目，只需要一个带有三个命令的<code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>文件。</p>
+<p><strong>注意：</strong>尽管CMake支持大写、小写和混合大小写命令，但小写命令是首选，并将在整个教程中使用。</p>
+<p>任何项目的最顶层的CMakeLists.txt必须通过使用<span class="target" id="index-0-command:cmake_minimum_required"></span><a class="reference internal" href="../../command/cmake_minimum_required.html#command:cmake_minimum_required" title="cmake_minimum_required"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_minimum_required()</span></code></a>命令指定最小的CMake版本开始。这将建立策略设置，并确保随后的CMake函数在CMake的兼容版本中运行。</p>
+<p>要启动一个项目，我们使用<span class="target" id="index-0-command:project"></span><a class="reference internal" href="../../command/project.html#command:project" title="project"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">project()</span></code></a>命令来设置项目名称。每个项目都需要这个调用，应紧随<span class="target" id="index-1-command:cmake_minimum_required"></span><a class="reference internal" href="../../command/cmake_minimum_required.html#command:cmake_minimum_required" title="cmake_minimum_required"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_minimum_required()</span></code></a>其后。正如我们稍后将看到的，该命令还可以用于指定其他项目级别的信息，如语言或版本号。</p>
+<p>最后，<span class="target" id="index-0-command:add_executable"></span><a class="reference internal" href="../../command/add_executable.html#command:add_executable" title="add_executable"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">add_executable()</span></code></a>命令告诉CMake使用指定的源代码文件创建一个可执行文件。</p>
+<section id="id3">
+<h3>目标<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<p>了解如何创建一个简单的CMake项目。</p>
+</section>
+<section id="id4">
+<h3>有用的资源<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><span class="target" id="index-1-command:add_executable"></span><a class="reference internal" href="../../command/add_executable.html#command:add_executable" title="add_executable"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">add_executable()</span></code></a></p></li>
+<li><p><span class="target" id="index-2-command:cmake_minimum_required"></span><a class="reference internal" href="../../command/cmake_minimum_required.html#command:cmake_minimum_required" title="cmake_minimum_required"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_minimum_required()</span></code></a></p></li>
+<li><p><span class="target" id="index-1-command:project"></span><a class="reference internal" href="../../command/project.html#command:project" title="project"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">project()</span></code></a></p></li>
+</ul>
+</section>
+<section id="id5">
+<h3>待编辑的文件<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code></p></li>
+</ul>
+</section>
+<section id="id6">
+<h3>开始<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">tutorial.cxx</span></code>的源代码在<code class="docutils literal notranslate"><span class="pre">Help/guide/tutorial/Step1</span></code>目录中提供，可用于计算一个数的平方根。在此步骤中不需要编辑此文件。</p>
+<p>在同一个目录中有一个待你完成的<code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>文件。从<code class="docutils literal notranslate"><span class="pre">TODO</span> <span class="pre">1</span></code>开始，真到<code class="docutils literal notranslate"><span class="pre">TODO</span> <span class="pre">3</span></code>。</p>
+</section>
+<section id="id7">
+<h3>构建并运行<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
+<p>一旦完成了<code class="docutils literal notranslate"><span class="pre">TODO</span> <span class="pre">1</span></code>到<code class="docutils literal notranslate"><span class="pre">TODO</span> <span class="pre">3</span></code>，我们就准备好构建和运行我们的项目了！首先，运行<span class="target" id="index-0-manual:cmake(1)"></span><a class="reference internal" href="../../manual/cmake.1.html#manual:cmake(1)" title="cmake(1)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">cmake</span></code></a>可执行文件或<span class="target" id="index-0-manual:cmake-gui(1)"></span><a class="reference internal" href="../../manual/cmake-gui.1.html#manual:cmake-gui(1)" title="cmake-gui(1)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">cmake-gui</span></code></a>来配置项目，然后用你选择的构建工具构建它。</p>
+<p>例如，我们可以在命令行中导航到CMake源代码树的<code class="docutils literal notranslate"><span class="pre">Help/guide/tutorial</span></code>目录，并创建一个构建目录：</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">mkdir Step1_build</span>
+</pre></div>
+</div>
+<p>接下来，导航到那个构建目录并运行<span class="target" id="index-1-manual:cmake(1)"></span><a class="reference internal" href="../../manual/cmake.1.html#manual:cmake(1)" title="cmake(1)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">cmake</span></code></a>来配置项目并生成一个本地构建系统：</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd Step1_build</span>
+<span class="go">cmake ../Step1</span>
+</pre></div>
+</div>
+<p>然后调用构建系统来实际编译/链接项目：</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cmake --build .</span>
+</pre></div>
+</div>
+<p>对于多配置生成器（例如Visual Studio），首先导航到适当的子目录，例如：</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd Debug</span>
+</pre></div>
+</div>
+<p>最后，尝试使用新建的<code class="docutils literal notranslate"><span class="pre">Tutorial</span></code>：</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Tutorial 4294967296</span>
+<span class="go">Tutorial 10</span>
+<span class="go">Tutorial</span>
+</pre></div>
+</div>
+<p><strong>Note:</strong> 根据shell的不同，正确的语法可能是 <code class="docutils literal notranslate"><span class="pre">Tutorial</span></code>、<code class="docutils literal notranslate"><span class="pre">./Tutorial</span></code>或<code class="docutils literal notranslate"><span class="pre">.\Tutorial</span></code>。为简单起见，练习将自始至终使用<code class="docutils literal notranslate"><span class="pre">Tutorial</span></code>。</p>
+</section>
+<section id="id8">
+<h3>解决方案<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h3>
+<p>如上所述，一个三行的<code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>是启动和运行所需要的全部内容。第一行是使用<span class="target" id="index-3-command:cmake_minimum_required"></span><a class="reference internal" href="../../command/cmake_minimum_required.html#command:cmake_minimum_required" title="cmake_minimum_required"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_minimum_required()</span></code></a>设置CMake版本如下：</p>
+<details><summary>TODO 1: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="cmakelists-txt-cmake-minimum-required">
+<div class="code-block-caption"><span class="caption-text">TODO 1: CMakeLists.txt</span><a class="headerlink" href="#cmakelists-txt-cmake-minimum-required" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_minimum_required(</span><span class="no">VERSION</span><span class="w"> </span><span class="m">3.10</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details><p>创建基本项目的下一步是使用<span class="target" id="index-2-command:project"></span><a class="reference internal" href="../../command/project.html#command:project" title="project"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">project()</span></code></a>命令设置项目名称，如下所示：</p>
+<details><summary>TODO 2: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="cmakelists-txt-project">
+<div class="code-block-caption"><span class="caption-text">TODO 2: CMakeLists.txt</span><a class="headerlink" href="#cmakelists-txt-project" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">project(</span><span class="nb">Tutorial</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details><p>基本项目最后调用的一个命令是<span class="target" id="index-2-command:add_executable"></span><a class="reference internal" href="../../command/add_executable.html#command:add_executable" title="add_executable"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">add_executable()</span></code></a>。我们这样称呼它：</p>
+<details><summary>TODO 3: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="cmakelists-txt-add-executable">
+<div class="code-block-caption"><span class="caption-text">TODO 3: CMakeLists.txt</span><a class="headerlink" href="#cmakelists-txt-add-executable" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">add_executable(</span><span class="nb">Tutorial</span><span class="w"> </span><span class="nb">tutorial.cxx</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details></section>
+</section>
+<section id="c">
+<h2>练习2 - 指定c++标准<a class="headerlink" href="#c" title="Link to this heading">¶</a></h2>
+<p>CMake有一些特殊的变量，这些变量是在幕后创建的，或者在项目代码设置时对CMake有意义。许多这些变量都以<code class="docutils literal notranslate"><span class="pre">CMAKE_</span></code>开头。在为项目创建变量时，要避免这种命名约定。其中两个特殊的用户可设置变量是<span class="target" id="index-0-variable:CMAKE_CXX_STANDARD"></span><a class="reference internal" href="../../variable/CMAKE_CXX_STANDARD.html#variable:CMAKE_CXX_STANDARD" title="CMAKE_CXX_STANDARD"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_CXX_STANDARD</span></code></a>和<span class="target" id="index-0-variable:CMAKE_CXX_STANDARD_REQUIRED"></span><a class="reference internal" href="../../variable/CMAKE_CXX_STANDARD_REQUIRED.html#variable:CMAKE_CXX_STANDARD_REQUIRED" title="CMAKE_CXX_STANDARD_REQUIRED"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_CXX_STANDARD_REQUIRED</span></code></a>。这两个变量可以一起使用，以指定构建项目所需的C++标准。</p>
+<section id="id9">
+<h3>目标<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h3>
+<p>添加一个需要C++11的特性。</p>
+</section>
+<section id="id10">
+<h3>有用的资源<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><span class="target" id="index-1-variable:CMAKE_CXX_STANDARD"></span><a class="reference internal" href="../../variable/CMAKE_CXX_STANDARD.html#variable:CMAKE_CXX_STANDARD" title="CMAKE_CXX_STANDARD"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_CXX_STANDARD</span></code></a></p></li>
+<li><p><span class="target" id="index-1-variable:CMAKE_CXX_STANDARD_REQUIRED"></span><a class="reference internal" href="../../variable/CMAKE_CXX_STANDARD_REQUIRED.html#variable:CMAKE_CXX_STANDARD_REQUIRED" title="CMAKE_CXX_STANDARD_REQUIRED"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_CXX_STANDARD_REQUIRED</span></code></a></p></li>
+<li><p><span class="target" id="index-0-command:set"></span><a class="reference internal" href="../../command/set.html#command:set" title="set"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">set()</span></code></a></p></li>
+</ul>
+</section>
+<section id="id11">
+<h3>待编辑的文件<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tutorial.cxx</span></code></p></li>
+</ul>
+</section>
+<section id="id12">
+<h3>开始<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h3>
+<p>继续编辑<code class="docutils literal notranslate"><span class="pre">Step1</span></code>目录中的文件。从<code class="docutils literal notranslate"><span class="pre">TODO</span> <span class="pre">4</span></code>开始，直到<code class="docutils literal notranslate"><span class="pre">TODO</span> <span class="pre">6</span></code>。</p>
+<p>首先，通过编辑<code class="docutils literal notranslate"><span class="pre">tutorial.cxx</span></code>来添加一个需要C++11的特性。然后更新<code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>以要求C++11。</p>
+</section>
+<section id="id13">
+<h3>构建并运行<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h3>
+<p>让我们重新构建我们的项目。因为我们已经创建了一个构建目录并为练习1运行了CMake，我们可以跳到构建步骤：</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd Step1_build</span>
+<span class="go">cmake --build .</span>
+</pre></div>
+</div>
+<p>现在我们可以尝试使用与之前相同的命令来使用新构建的<code class="docutils literal notranslate"><span class="pre">Tutorial</span></code>：</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Tutorial 4294967296</span>
+<span class="go">Tutorial 10</span>
+<span class="go">Tutorial</span>
+</pre></div>
+</div>
+</section>
+<section id="id14">
+<h3>解决方案<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h3>
+<p>首先，我们在<code class="docutils literal notranslate"><span class="pre">tutorial.cxx</span></code>中将<code class="docutils literal notranslate"><span class="pre">atof</span></code>替换为<code class="docutils literal notranslate"><span class="pre">std::stod</span></code>，从而为我们的项目添加一些C++11特性。如下所示：</p>
+<details><summary>TODO 4: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="tutorial-cxx-cxx11">
+<div class="code-block-caption"><span class="caption-text">TODO 4: tutorial.cxx</span><a class="headerlink" href="#tutorial-cxx-cxx11" title="Link to this code">¶</a></div>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">inputValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">stod</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</pre></div>
+</div>
+</div>
+</details><p>要完成<code class="docutils literal notranslate"><span class="pre">TODO</span> <span class="pre">5</span></code>，只需删除<code class="docutils literal notranslate"><span class="pre">#include</span> <span class="pre">&lt;cstdlib&gt;</span></code>。</p>
+<p>我们需要在CMake代码中显式地声明它应该使用正确的标志。在CMake中启用对特定C++标准的支持的一种方法是使用<span class="target" id="index-2-variable:CMAKE_CXX_STANDARD"></span><a class="reference internal" href="../../variable/CMAKE_CXX_STANDARD.html#variable:CMAKE_CXX_STANDARD" title="CMAKE_CXX_STANDARD"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_CXX_STANDARD</span></code></a>变量。对于本教程，将<code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>文件中的<span class="target" id="index-3-variable:CMAKE_CXX_STANDARD"></span><a class="reference internal" href="../../variable/CMAKE_CXX_STANDARD.html#variable:CMAKE_CXX_STANDARD" title="CMAKE_CXX_STANDARD"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_CXX_STANDARD</span></code></a>变量设置为<code class="docutils literal notranslate"><span class="pre">11</span></code>，将<span class="target" id="index-2-variable:CMAKE_CXX_STANDARD_REQUIRED"></span><a class="reference internal" href="../../variable/CMAKE_CXX_STANDARD_REQUIRED.html#variable:CMAKE_CXX_STANDARD_REQUIRED" title="CMAKE_CXX_STANDARD_REQUIRED"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_CXX_STANDARD_REQUIRED</span></code></a>设置为<code class="docutils literal notranslate"><span class="pre">True</span></code>。确保调用<span class="target" id="index-3-command:add_executable"></span><a class="reference internal" href="../../command/add_executable.html#command:add_executable" title="add_executable"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">add_executable()</span></code></a>之前添加<span class="target" id="index-4-variable:CMAKE_CXX_STANDARD"></span><a class="reference internal" href="../../variable/CMAKE_CXX_STANDARD.html#variable:CMAKE_CXX_STANDARD" title="CMAKE_CXX_STANDARD"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_CXX_STANDARD</span></code></a>声明。</p>
+<details><summary>TODO 6: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="cmakelists-txt-cxx-standard">
+<div class="code-block-caption"><span class="caption-text">TODO 6: CMakeLists.txt</span><a class="headerlink" href="#cmakelists-txt-cxx-standard" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">set(</span><span class="no">CMAKE_CXX_STANDARD</span><span class="w"> </span><span class="m">11</span><span class="nf">)</span>
+<span class="nf">set(</span><span class="no">CMAKE_CXX_STANDARD_REQUIRED</span><span class="w"> </span><span class="nb">True</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details></section>
+</section>
+<section id="id15">
+<h2>练习3 - 添加版本号和配置的头文件<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h2>
+<p>有时，<code class="docutils literal notranslate"><span class="pre">CMakelists.txt</span></code>文件中定义的变量也可以在源代码中使用，这可能会很有用。在这种情况下，我们想打印项目版本。</p>
+<p>实现这一点的一种方法是使用配置好的头文件。我们创建一个输入文件，其中包含一个或多个要替换的变量。这些变量具有类似<code class="docutils literal notranslate"><span class="pre">&#64;VAR&#64;</span></code>的特殊语法。然后，我们使用<span class="target" id="index-0-command:configure_file"></span><a class="reference internal" href="../../command/configure_file.html#command:configure_file" title="configure_file"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">configure_file()</span></code></a>命令将输入文件复制到给定的输出文件，并用<code class="docutils literal notranslate"><span class="pre">CMakelists.txt</span></code>文件中的<code class="docutils literal notranslate"><span class="pre">VAR</span></code>当前值替换这些变量。</p>
+<p>虽然我们可以直接在源代码中编辑版本，但最好使用这个特性，因为它创建了一个真实的单一来源，并避免了重复。</p>
+<section id="id16">
+<h3>目标<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h3>
+<p>定义并报告项目的版本号。</p>
+</section>
+<section id="id17">
+<h3>有用的资源<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><span class="target" id="index-0-variable:&lt;PROJECT-NAME&gt;_VERSION_MAJOR"></span><a class="reference internal" href="../../variable/PROJECT-NAME_VERSION_MAJOR.html#variable:&lt;PROJECT-NAME&gt;_VERSION_MAJOR" title="&lt;PROJECT-NAME&gt;_VERSION_MAJOR"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">&lt;PROJECT-NAME&gt;_VERSION_MAJOR</span></code></a></p></li>
+<li><p><span class="target" id="index-0-variable:&lt;PROJECT-NAME&gt;_VERSION_MINOR"></span><a class="reference internal" href="../../variable/PROJECT-NAME_VERSION_MINOR.html#variable:&lt;PROJECT-NAME&gt;_VERSION_MINOR" title="&lt;PROJECT-NAME&gt;_VERSION_MINOR"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">&lt;PROJECT-NAME&gt;_VERSION_MINOR</span></code></a></p></li>
+<li><p><span class="target" id="index-1-command:configure_file"></span><a class="reference internal" href="../../command/configure_file.html#command:configure_file" title="configure_file"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">configure_file()</span></code></a></p></li>
+<li><p><span class="target" id="index-0-command:target_include_directories"></span><a class="reference internal" href="../../command/target_include_directories.html#command:target_include_directories" title="target_include_directories"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_include_directories()</span></code></a></p></li>
+</ul>
+</section>
+<section id="id18">
+<h3>待编辑的文件<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tutorial.cxx</span></code></p></li>
+</ul>
+</section>
+<section id="id19">
+<h3>开始<a class="headerlink" href="#id19" title="Link to this heading">¶</a></h3>
+<p>继续编辑<code class="docutils literal notranslate"><span class="pre">Step1</span></code>中的文件。从<code class="docutils literal notranslate"><span class="pre">TODO</span> <span class="pre">7</span></code>开始，直到<code class="docutils literal notranslate"><span class="pre">TODO</span> <span class="pre">12</span></code>。在这个练习中，我们首先在<code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>中添加一个项目版本号。在同一个文件中，使用<span class="target" id="index-2-command:configure_file"></span><a class="reference internal" href="../../command/configure_file.html#command:configure_file" title="configure_file"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">configure_file()</span></code></a>将给定的输入文件复制到输出文件中，并在输入文件内容中替换一些变量值。</p>
+<p>接下来，在定义版本号时创建一个输入头文件<code class="docutils literal notranslate"><span class="pre">TutorialConfig.h.in</span></code>。它将接受来自<span class="target" id="index-3-command:configure_file"></span><a class="reference internal" href="../../command/configure_file.html#command:configure_file" title="configure_file"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">configure_file()</span></code></a>的变量。</p>
+<p>最后，更新<code class="docutils literal notranslate"><span class="pre">tutorial.cxx</span></code>以打印出它的版本号。</p>
+</section>
+<section id="id20">
+<h3>构建并运行<a class="headerlink" href="#id20" title="Link to this heading">¶</a></h3>
+<p>让我们重新构建我们的项目。和前面一样，我们已经创建了一个构建目录并运行CMake，所以我们可以跳到构建步骤：</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd Step1_build</span>
+<span class="go">cmake --build .</span>
+</pre></div>
+</div>
+<p>在不带任何参数运行可执行文件时，验证版本号现已可报告。</p>
+</section>
+<section id="id21">
+<h3>解决方案<a class="headerlink" href="#id21" title="Link to this heading">¶</a></h3>
+<p>在本练习中，我们通过打印版本号来改进可执行文件。虽然我们可以在源代码中单独完成这一点，但是使用<code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>可以让我们维护版本号的单个数据源。</p>
+<p>首先，我们修改<code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>文件，以使用<span class="target" id="index-3-command:project"></span><a class="reference internal" href="../../command/project.html#command:project" title="project"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">project()</span></code></a>命令设置项目名称和版本号。当<span class="target" id="index-4-command:project"></span><a class="reference internal" href="../../command/project.html#command:project" title="project"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">project()</span></code></a>命令被调用时，CMake在幕后定义<code class="docutils literal notranslate"><span class="pre">Tutorial_VERSION_MAJOR</span></code>和<code class="docutils literal notranslate"><span class="pre">Tutorial_VERSION_MINOR</span></code>。</p>
+<details><summary>TODO 7: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="cmakelists-txt-project-version">
+<div class="code-block-caption"><span class="caption-text">TODO 7: CMakeLists.txt</span><a class="headerlink" href="#cmakelists-txt-project-version" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">project(</span><span class="nb">Tutorial</span><span class="w"> </span><span class="no">VERSION</span><span class="w"> </span><span class="m">1.0</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details><p>然后我们使用<span class="target" id="index-4-command:configure_file"></span><a class="reference internal" href="../../command/configure_file.html#command:configure_file" title="configure_file"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">configure_file()</span></code></a>复制输入文件，替换指定的CMake变量：</p>
+<details><summary>TODO 8: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="cmakelists-txt-configure-file">
+<div class="code-block-caption"><span class="caption-text">TODO 8: CMakeLists.txt</span><a class="headerlink" href="#cmakelists-txt-configure-file" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">configure_file(</span><span class="nb">TutorialConfig.h.in</span><span class="w"> </span><span class="nb">TutorialConfig.h</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details><p>因为配置的文件将被写入项目二进制文件目录，我们必须将该目录添加到要搜索的包括文件路径列表中。</p>
+<p><strong>注意：</strong>在本教程中，我们将交替使用项目构建和项目二进制目录。它们是相同的，并不意味着要引用<cite>bin/</cite>目录。</p>
+<p>我们使用<span class="target" id="index-1-command:target_include_directories"></span><a class="reference internal" href="../../command/target_include_directories.html#command:target_include_directories" title="target_include_directories"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_include_directories()</span></code></a>来指定可执行目标应该在哪里查找包含文件。</p>
+<details><summary>TODO 9: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="cmakelists-txt-target-include-directories">
+<div class="code-block-caption"><span class="caption-text">TODO 9: CMakeLists.txt</span><a class="headerlink" href="#cmakelists-txt-target-include-directories" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">target_include_directories(</span><span class="nb">Tutorial</span><span class="w"> </span><span class="no">PUBLIC</span>
+<span class="w">                           </span><span class="s">&quot;${PROJECT_BINARY_DIR}&quot;</span>
+<span class="w">                           </span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details><p><code class="docutils literal notranslate"><span class="pre">TutorialConfig.h.in</span></code>是要配置的输入头文件。当<span class="target" id="index-5-command:configure_file"></span><a class="reference internal" href="../../command/configure_file.html#command:configure_file" title="configure_file"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">configure_file()</span></code></a>从我们的<code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>中被调用时，<code class="docutils literal notranslate"><span class="pre">&#64;Tutorial_VERSION_MAJOR&#64;</span></code>和<code class="docutils literal notranslate"><span class="pre">&#64;Tutorial_VERSION_MINOR&#64;</span></code>的值将被<code class="docutils literal notranslate"><span class="pre">TutorialConfig.h</span></code>中来自项目的相应版本号替换。</p>
+<details><summary>TODO 10: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="tutorialconfig-h-in">
+<div class="code-block-caption"><span class="caption-text">TODO 10: TutorialConfig.h.in</span><a class="headerlink" href="#tutorialconfig-h-in" title="Link to this code">¶</a></div>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="c1">// Tutorial配置的选项和设置</span>
+<span class="cp">#define Tutorial_VERSION_MAJOR @Tutorial_VERSION_MAJOR@</span>
+<span class="cp">#define Tutorial_VERSION_MINOR @Tutorial_VERSION_MINOR@</span>
+</pre></div>
+</div>
+</div>
+</details><p>接下来，我们需要修改<code class="docutils literal notranslate"><span class="pre">tutorial.cxx</span></code>，以包含配置的头文件<code class="docutils literal notranslate"><span class="pre">TutorialConfig.h</span></code>。</p>
+<details><summary>TODO 11: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="id22">
+<div class="code-block-caption"><span class="caption-text">TODO 11: tutorial.cxx</span><a class="headerlink" href="#id22" title="Link to this code">¶</a></div>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;TutorialConfig.h&quot;</span>
+</pre></div>
+</div>
+</div>
+</details><p>最后，我们通过如下方式更新<code class="docutils literal notranslate"><span class="pre">tutorial.cxx</span></code>，打印出可执行文件的名称和版本号：</p>
+<details><summary>TODO 12: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="tutorial-cxx-print-version">
+<div class="code-block-caption"><span class="caption-text">TODO 12 : tutorial.cxx</span><a class="headerlink" href="#tutorial-cxx-print-version" title="Link to this code">¶</a></div>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 报告版本号</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; Version &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">Tutorial_VERSION_MAJOR</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;.&quot;</span>
+<span class="w">              </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">Tutorial_VERSION_MINOR</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Usage: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; number&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</details></section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../../index.html">目录</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">步骤1：一个基本的起点</a><ul>
+<li><a class="reference internal" href="#id2">练习1 - 创建一个基本项目</a><ul>
+<li><a class="reference internal" href="#id3">目标</a></li>
+<li><a class="reference internal" href="#id4">有用的资源</a></li>
+<li><a class="reference internal" href="#id5">待编辑的文件</a></li>
+<li><a class="reference internal" href="#id6">开始</a></li>
+<li><a class="reference internal" href="#id7">构建并运行</a></li>
+<li><a class="reference internal" href="#id8">解决方案</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#c">练习2 - 指定c++标准</a><ul>
+<li><a class="reference internal" href="#id9">目标</a></li>
+<li><a class="reference internal" href="#id10">有用的资源</a></li>
+<li><a class="reference internal" href="#id11">待编辑的文件</a></li>
+<li><a class="reference internal" href="#id12">开始</a></li>
+<li><a class="reference internal" href="#id13">构建并运行</a></li>
+<li><a class="reference internal" href="#id14">解决方案</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id15">练习3 - 添加版本号和配置的头文件</a><ul>
+<li><a class="reference internal" href="#id16">目标</a></li>
+<li><a class="reference internal" href="#id17">有用的资源</a></li>
+<li><a class="reference internal" href="#id18">待编辑的文件</a></li>
+<li><a class="reference internal" href="#id19">开始</a></li>
+<li><a class="reference internal" href="#id20">构建并运行</a></li>
+<li><a class="reference internal" href="#id21">解决方案</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>上一主题</h4>
+    <p class="topless"><a href="index.html"
+                          title="上一章">CMake教程</a></p>
+  </div>
+  <div>
+    <h4>下一主题</h4>
+    <p class="topless"><a href="Adding%20a%20Library.html"
+                          title="下一章">步骤2：添加库</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>本页</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/guide/tutorial/A Basic Starting Point.rst.txt"
+            rel="nofollow">显示源代码</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">快速搜索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="提交" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="Adding%20a%20Library.html" title="步骤2：添加库"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="CMake教程"
+             >上一页</a> |</li>
+  <li>
+    <img src="../../_static/cmake-logo-16.png" alt=""
+         style="vertical-align: middle; margin-top: -2px" />
+  </li>
+  <li>
+    <a href="https://cmake.org/">CMake</a> &#187;
+  </li>
+  <li>
+    <a href="../../index.html">3.29.1-g21d0c57 Documentation</a> &#187;
+  </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >CMake教程</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">步骤1：一个基本的起点</a></li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+    &#169; 版权所有 2000-2024 Kitware, Inc. and Contributors.
+      由 <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6创建。
+    </div>
+  </body>
+</html>

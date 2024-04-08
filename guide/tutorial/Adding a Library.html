@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>步骤2：添加库 &mdash; CMake 3.29.1-g21d0c57 Documentation</title>
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a2c47e09" />
+    <link rel="stylesheet" type="text/css" href="../../_static/cmake.css?v=3e562cf9" />
+    
+    <script src="../../_static/documentation_options.js?v=17f7ec5f"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/translations.js?v=beaddf03"></script>
+    
+    <link rel="icon" href="../../_static/cmake-favicon.ico"/>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="步骤3：添加库的使用需求" href="Adding%20Usage%20Requirements%20for%20a%20Library.html" />
+    <link rel="prev" title="步骤1：一个基本的起点" href="A%20Basic%20Starting%20Point.html" />
+ 
+
+  </head><body>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="Adding%20Usage%20Requirements%20for%20a%20Library.html" title="步骤3：添加库的使用需求"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="A%20Basic%20Starting%20Point.html" title="步骤1：一个基本的起点"
+             accesskey="P">上一页</a> |</li>
+  <li>
+    <img src="../../_static/cmake-logo-16.png" alt=""
+         style="vertical-align: middle; margin-top: -2px" />
+  </li>
+  <li>
+    <a href="https://cmake.org/">CMake</a> &#187;
+  </li>
+  <li>
+    <a href="../../index.html">3.29.1-g21d0c57 Documentation</a> &#187;
+  </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">CMake教程</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">步骤2：添加库</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="guide:tutorial/Adding a Library">
+<span id="id1"></span><h1>步骤2：添加库<a class="headerlink" href="#guide:tutorial/Adding a Library" title="Link to this heading">¶</a></h1>
+<p>至此，我们已经了解了如何使用CMake创建一个基本项目。在这一步中，我们将学习如何在我们的项目中创建和使用库。我们还将了解如何使库的使用成为可选的。</p>
+<section id="id2">
+<h2>练习1 - 创建一个库<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<p>要在CMake中添加库，可以使用<span class="target" id="index-0-command:add_library"></span><a class="reference internal" href="../../command/add_library.html#command:add_library" title="add_library"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">add_library()</span></code></a>命令并指定应该由哪些源文件组成库。</p>
+<p>我们可以用一个或多个子目录来组织项目，而不是将所有源文件放在一个目录中。在本例中，我们将专门为库创建一个子目录。在这里，我们可以添加一个新的<code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>文件和一个或多个源文件。在顶层<code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>文件中，我们将使用<span class="target" id="index-0-command:add_subdirectory"></span><a class="reference internal" href="../../command/add_subdirectory.html#command:add_subdirectory" title="add_subdirectory"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">add_subdirectory()</span></code></a>命令将子目录添加到构建中。</p>
+<p>一旦创建了库，它将通过<span class="target" id="index-0-command:target_include_directories"></span><a class="reference internal" href="../../command/target_include_directories.html#command:target_include_directories" title="target_include_directories"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_include_directories()</span></code></a>和<span class="target" id="index-0-command:target_link_libraries"></span><a class="reference internal" href="../../command/target_link_libraries.html#command:target_link_libraries" title="target_link_libraries"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_link_libraries()</span></code></a>连接到可执行目标。</p>
+<section id="id3">
+<h3>目标<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<p>添加并使用一个库。</p>
+</section>
+<section id="id4">
+<h3>有用的资源<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><span class="target" id="index-1-command:add_library"></span><a class="reference internal" href="../../command/add_library.html#command:add_library" title="add_library"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">add_library()</span></code></a></p></li>
+<li><p><span class="target" id="index-1-command:add_subdirectory"></span><a class="reference internal" href="../../command/add_subdirectory.html#command:add_subdirectory" title="add_subdirectory"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">add_subdirectory()</span></code></a></p></li>
+<li><p><span class="target" id="index-1-command:target_include_directories"></span><a class="reference internal" href="../../command/target_include_directories.html#command:target_include_directories" title="target_include_directories"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_include_directories()</span></code></a></p></li>
+<li><p><span class="target" id="index-1-command:target_link_libraries"></span><a class="reference internal" href="../../command/target_link_libraries.html#command:target_link_libraries" title="target_link_libraries"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_link_libraries()</span></code></a></p></li>
+<li><p><span class="target" id="index-0-variable:PROJECT_SOURCE_DIR"></span><a class="reference internal" href="../../variable/PROJECT_SOURCE_DIR.html#variable:PROJECT_SOURCE_DIR" title="PROJECT_SOURCE_DIR"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">PROJECT_SOURCE_DIR</span></code></a></p></li>
+</ul>
+</section>
+<section id="id5">
+<h3>待编辑的文件<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tutorial.cxx</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MathFunctions/CMakeLists.txt</span></code></p></li>
+</ul>
+</section>
+<section id="id6">
+<h3>开始<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
+<p>在这个练习中，我们将向我们的项目中添加一个库，其中包含我们自己的用于计算数字平方根的实现。然后，可执行程序可以使用这个库，而不是编译器提供的标准平方根函数。</p>
+<p>在本教程中，我们将把库放入名为<code class="docutils literal notranslate"><span class="pre">MathFunctions</span></code>的子目录中。这个目录已经包含了头文件<code class="docutils literal notranslate"><span class="pre">MathFunctions.h</span></code>和<code class="docutils literal notranslate"><span class="pre">mysqrt.h</span></code>。还提供了它们各自的源文件<code class="docutils literal notranslate"><span class="pre">MathFunctions.cxx</span></code>和<code class="docutils literal notranslate"><span class="pre">mysqrt.cxx</span></code>。我们不需要修改这些文件中的任何一个。<code class="docutils literal notranslate"><span class="pre">mysqrt.cxx</span></code>有一个名为<code class="docutils literal notranslate"><span class="pre">mysqrt</span></code>的函数，它提供了与编译器的<code class="docutils literal notranslate"><span class="pre">sqrt</span></code>函数类似的功能。<code class="docutils literal notranslate"><span class="pre">MathFunctions.cxx</span></code>包含一个函数<code class="docutils literal notranslate"><span class="pre">sqrt</span></code>，用于隐藏<code class="docutils literal notranslate"><span class="pre">sqrt</span></code>的实现细节。</p>
+<p>从<code class="docutils literal notranslate"><span class="pre">Help/guide/tutorial/Step2</span></code>目录中，从<code class="docutils literal notranslate"><span class="pre">TODO</span> <span class="pre">1</span></code>开始，到<code class="docutils literal notranslate"><span class="pre">TODO</span> <span class="pre">6</span></code>完成。</p>
+<p>首先，在<code class="docutils literal notranslate"><span class="pre">MathFunctions</span></code>子目录中填写一行的<code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>。</p>
+<p>接下来，编辑顶层的<code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>。</p>
+<p>最后，在<code class="docutils literal notranslate"><span class="pre">tutorial.cxx</span></code>中使用新创建的<code class="docutils literal notranslate"><span class="pre">MathFunctions</span></code>库。</p>
+</section>
+<section id="id7">
+<h3>构建并运行<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
+<p>运行<span class="target" id="index-0-manual:cmake(1)"></span><a class="reference internal" href="../../manual/cmake.1.html#manual:cmake(1)" title="cmake(1)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">cmake</span></code></a>可执行文件或<span class="target" id="index-0-manual:cmake-gui(1)"></span><a class="reference internal" href="../../manual/cmake-gui.1.html#manual:cmake-gui(1)" title="cmake-gui(1)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">cmake-gui</span></code></a>来配置项目，然后用你选择的构建工具构建它。</p>
+<p>下面是命令行中的一个刷新：</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">mkdir Step2_build</span>
+<span class="go">cd Step2_build</span>
+<span class="go">cmake ../Step2</span>
+<span class="go">cmake --build .</span>
+</pre></div>
+</div>
+<p>尝试使用新构建的<code class="docutils literal notranslate"><span class="pre">Tutorial</span></code>，并确保它仍然产生准确的平方根值。</p>
+</section>
+<section id="id8">
+<h3>解决方案<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h3>
+<p>在<code class="docutils literal notranslate"><span class="pre">MathFunctions</span></code>目录下的<code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>文件中，我们使用<span class="target" id="index-2-command:add_library"></span><a class="reference internal" href="../../command/add_library.html#command:add_library" title="add_library"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">add_library()</span></code></a>创建了一个名为<code class="docutils literal notranslate"><span class="pre">MathFunctions</span></code>的库目标。库的源文件作为参数传递给<span class="target" id="index-3-command:add_library"></span><a class="reference internal" href="../../command/add_library.html#command:add_library" title="add_library"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">add_library()</span></code></a>。这看起来像下面这行：</p>
+<details><summary>TODO 1: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="mathfunctions-cmakelists-txt-add-library">
+<div class="code-block-caption"><span class="caption-text">TODO 1: MathFunctions/CMakeLists.txt</span><a class="headerlink" href="#mathfunctions-cmakelists-txt-add-library" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">add_library(</span><span class="nb">MathFunctions</span><span class="w"> </span><span class="nb">MathFunctions.cxx</span><span class="w"> </span><span class="nb">mysqrt.cxx</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details><p>为了使用新的库，我们将在顶层<code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>文件中添加一个<span class="target" id="index-2-command:add_subdirectory"></span><a class="reference internal" href="../../command/add_subdirectory.html#command:add_subdirectory" title="add_subdirectory"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">add_subdirectory()</span></code></a>调用，以便构建库。</p>
+<details><summary>TODO 2: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="cmakelists-txt-add-subdirectory">
+<div class="code-block-caption"><span class="caption-text">TODO 2: CMakeLists.txt</span><a class="headerlink" href="#cmakelists-txt-add-subdirectory" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">add_subdirectory(</span><span class="nb">MathFunctions</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details><p>接下来，使用<span class="target" id="index-2-command:target_link_libraries"></span><a class="reference internal" href="../../command/target_link_libraries.html#command:target_link_libraries" title="target_link_libraries"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_link_libraries()</span></code></a>将新的库目标链接到可执行目标。</p>
+<details><summary>TODO 3: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="cmakelists-txt-target-link-libraries">
+<div class="code-block-caption"><span class="caption-text">TODO 3: CMakeLists.txt</span><a class="headerlink" href="#cmakelists-txt-target-link-libraries" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">target_link_libraries(</span><span class="nb">Tutorial</span><span class="w"> </span><span class="no">PUBLIC</span><span class="w"> </span><span class="nb">MathFunctions</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details><p>最后，我们需要指定库的头文件位置。修改现存的<span class="target" id="index-2-command:target_include_directories"></span><a class="reference internal" href="../../command/target_include_directories.html#command:target_include_directories" title="target_include_directories"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_include_directories()</span></code></a>以添加<code class="docutils literal notranslate"><span class="pre">MathFunctions</span></code>子目录作为包含目录，以便可以找到<code class="docutils literal notranslate"><span class="pre">MathFunctions.h</span></code>头文件。</p>
+<details><summary>TODO 4: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="cmakelists-txt-target-include-directories-step2">
+<div class="code-block-caption"><span class="caption-text">TODO 4: CMakeLists.txt</span><a class="headerlink" href="#cmakelists-txt-target-include-directories-step2" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">target_include_directories(</span><span class="nb">Tutorial</span><span class="w"> </span><span class="no">PUBLIC</span>
+<span class="w">                          </span><span class="s">&quot;${PROJECT_BINARY_DIR}&quot;</span>
+<span class="w">                          </span><span class="s">&quot;${PROJECT_SOURCE_DIR}/MathFunctions&quot;</span>
+<span class="w">                          </span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details><p>现在让我们使用库。在<code class="docutils literal notranslate"><span class="pre">tutorial.cxx</span></code>中，包含 <code class="docutils literal notranslate"><span class="pre">MathFunctions.h</span></code>：</p>
+<details><summary>TODO 5: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="cmakelists-txt-include-mathfunctions-h">
+<div class="code-block-caption"><span class="caption-text">TODO 5: tutorial.cxx</span><a class="headerlink" href="#cmakelists-txt-include-mathfunctions-h" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="c">#include &quot;MathFunctions.h&quot;</span>
+</pre></div>
+</div>
+</div>
+</details><p>最后，用包装函数<code class="docutils literal notranslate"><span class="pre">mathfunctions::sqrt</span></code>替换<code class="docutils literal notranslate"><span class="pre">sqrt</span></code>。</p>
+<details><summary>TODO 6: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="cmakelists-txt-option">
+<div class="code-block-caption"><span class="caption-text">TODO 6: tutorial.cxx</span><a class="headerlink" href="#cmakelists-txt-option" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nb">const</span><span class="w"> </span><span class="nb">double</span><span class="w"> </span><span class="nb">outputValue</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">mathfunctions</span><span class="o">::</span><span class="nf">sqrt(</span><span class="nb">inputValue</span><span class="nf">)</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</details></section>
+</section>
+<section id="id9">
+<h2>练习2 - 添加选项<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h2>
+<p>现在让我们在MathFunctions库中添加一个选项，允许开发人员选择自定义的平方根实现或内置的标准实现。虽然对于教程来说，确实没有必要这样做，但对于大型项目来说，这是一种常见的情况。</p>
+<p>CMake可以使用<span class="target" id="index-0-command:option"></span><a class="reference internal" href="../../command/option.html#command:option" title="option"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">option()</span></code></a>命令来做到这一点。这为用户提供了一个变量，他们可以在配置cmake构建时更改该变量。此设置将存储在缓存中，以便用户不需要每次在构建目录上运行CMake时都设置该值。</p>
+<section id="id10">
+<h3>目标<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h3>
+<p>添加不使用<code class="docutils literal notranslate"><span class="pre">MathFunctions</span></code>进行构建的选项。</p>
+</section>
+<section id="id11">
+<h3>有用的资源<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><span class="target" id="index-0-command:if"></span><a class="reference internal" href="../../command/if.html#command:if" title="if"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">if()</span></code></a></p></li>
+<li><p><span class="target" id="index-1-command:option"></span><a class="reference internal" href="../../command/option.html#command:option" title="option"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">option()</span></code></a></p></li>
+<li><p><span class="target" id="index-0-command:target_compile_definitions"></span><a class="reference internal" href="../../command/target_compile_definitions.html#command:target_compile_definitions" title="target_compile_definitions"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_definitions()</span></code></a></p></li>
+</ul>
+</section>
+<section id="id12">
+<h3>待编辑的文件<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">MathFunctions/CMakeLists.txt</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MathFunctions/MathFunctions.cxx</span></code></p></li>
+</ul>
+</section>
+<section id="id13">
+<h3>开始<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h3>
+<p>从练习1中的结果文件开始。完成<code class="docutils literal notranslate"><span class="pre">TODO</span> <span class="pre">7</span></code>至<code class="docutils literal notranslate"><span class="pre">TODO</span> <span class="pre">14</span></code>。</p>
+<p>首先使用<code class="docutils literal notranslate"><span class="pre">MathFunctions/CMakeLists.txt</span></code>中的<span class="target" id="index-2-command:option"></span><a class="reference internal" href="../../command/option.html#command:option" title="option"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">option()</span></code></a>命令创建一个变量<code class="docutils literal notranslate"><span class="pre">USE_MYMATH</span></code>。在同一个文件中，使用该选项将编译定义传递给<code class="docutils literal notranslate"><span class="pre">MathFunctions</span></code>库。</p>
+<p>然后，更新<code class="docutils literal notranslate"><span class="pre">MathFunctions.cxx</span></code>以基于<code class="docutils literal notranslate"><span class="pre">USE_MYMATH</span></code>重定向编译。</p>
+<p>最后，防止<code class="docutils literal notranslate"><span class="pre">mysqrt.cxx</span></code>在<code class="docutils literal notranslate"><span class="pre">USE_MYMATH</span></code>打开时被编译，方法是在<code class="docutils literal notranslate"><span class="pre">MathFunctions/CMakeLists.txt</span></code>的<code class="docutils literal notranslate"><span class="pre">USE_MYMATH</span></code>块中使其成为自己的库。</p>
+</section>
+<section id="id14">
+<h3>构建并运行<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h3>
+<p>因为我们已经在练习1中配置了构建目录，我们可以通过简单地调用以下命令来重新构建：</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd ../Step2_build</span>
+<span class="go">cmake --build .</span>
+</pre></div>
+</div>
+<p>接下来，用几个数字来运行<code class="docutils literal notranslate"><span class="pre">Tutorial</span></code>可执行文件，以验证它仍然正确。</p>
+<p>现在让我们将<code class="docutils literal notranslate"><span class="pre">USE_MYMATH</span></code>的值更新为<code class="docutils literal notranslate"><span class="pre">OFF</span></code>。如果你在终端中，最简单的方法是使用<span class="target" id="index-1-manual:cmake-gui(1)"></span><a class="reference internal" href="../../manual/cmake-gui.1.html#manual:cmake-gui(1)" title="cmake-gui(1)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">cmake-gui</span></code></a>或<span class="target" id="index-0-manual:ccmake(1)"></span><a class="reference internal" href="../../manual/ccmake.1.html#manual:ccmake(1)" title="ccmake(1)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">ccmake</span></code></a>。或者，如果你想从命令行更改这个选项，试试：</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cmake ../Step2 -DUSE_MYMATH=OFF</span>
+</pre></div>
+</div>
+<p>现在，用以下代码重新构建代码：</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cmake --build .</span>
+</pre></div>
+</div>
+<p>然后，再次运行可执行文件，以确保在<code class="docutils literal notranslate"><span class="pre">USE_MYMATH</span></code>设置为<code class="docutils literal notranslate"><span class="pre">OFF</span></code>时它仍然可以工作。哪个函数的结果更好，<code class="docutils literal notranslate"><span class="pre">sqrt</span></code>还是<code class="docutils literal notranslate"><span class="pre">mysqrt</span></code>？</p>
+</section>
+<section id="id15">
+<h3>解决方案<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h3>
+<p>第一步是向顶层<code class="docutils literal notranslate"><span class="pre">MathFunctions/CMakeLists.txt</span></code>文件添加一个选项。该选项将显示在<span class="target" id="index-2-manual:cmake-gui(1)"></span><a class="reference internal" href="../../manual/cmake-gui.1.html#manual:cmake-gui(1)" title="cmake-gui(1)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">cmake-gui</span></code></a>和<span class="target" id="index-1-manual:ccmake(1)"></span><a class="reference internal" href="../../manual/ccmake.1.html#manual:ccmake(1)" title="ccmake(1)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">ccmake</span></code></a>中，默认值为<code class="docutils literal notranslate"><span class="pre">ON</span></code>，用户可以更改该值。</p>
+<details><summary>TODO 7: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="cmakelists-txt-option-library-level">
+<div class="code-block-caption"><span class="caption-text">TODO 7: MathFunctions/CMakeLists.txt</span><a class="headerlink" href="#cmakelists-txt-option-library-level" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">option(</span><span class="no">USE_MYMATH</span><span class="w"> </span><span class="s">&quot;Use tutorial provided math implementation&quot;</span><span class="w"> </span><span class="no">ON</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details><p>接下来，使用这个新选项使库与<code class="docutils literal notranslate"><span class="pre">mysqrt</span></code>函数的构建和链接成为有条件的。</p>
+<p>创建一个<span class="target" id="index-1-command:if"></span><a class="reference internal" href="../../command/if.html#command:if" title="if"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">if()</span></code></a>语句来检查<code class="docutils literal notranslate"><span class="pre">USE_MYMATH</span></code>的值。在<span class="target" id="index-2-command:if"></span><a class="reference internal" href="../../command/if.html#command:if" title="if"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">if()</span></code></a>块中，放入<span class="target" id="index-1-command:target_compile_definitions"></span><a class="reference internal" href="../../command/target_compile_definitions.html#command:target_compile_definitions" title="target_compile_definitions"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_definitions()</span></code></a>命令和编译定义<code class="docutils literal notranslate"><span class="pre">USE_MYMATH</span></code>。</p>
+<details><summary>TODO 8: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="cmakelists-txt-use-mymath">
+<div class="code-block-caption"><span class="caption-text">TODO 8: MathFunctions/CMakeLists.txt</span><a class="headerlink" href="#cmakelists-txt-use-mymath" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">if</span> <span class="nf">(</span><span class="no">USE_MYMATH</span><span class="nf">)</span>
+<span class="w">  </span><span class="nf">target_compile_definitions(</span><span class="nb">MathFunctions</span><span class="w"> </span><span class="no">PRIVATE</span><span class="w"> </span><span class="s">&quot;USE_MYMATH&quot;</span><span class="nf">)</span>
+<span class="nf">endif()</span>
+</pre></div>
+</div>
+</div>
+</details><p>当<code class="docutils literal notranslate"><span class="pre">USE_MYMATH</span></code>为<code class="docutils literal notranslate"><span class="pre">ON</span></code>时，编译定义<code class="docutils literal notranslate"><span class="pre">USE_MYMATH</span></code>将被设置。然后，我们可以使用这个编译定义来启用或禁用源代码的部分。</p>
+<p>对源代码的相应更改相当简单。在<code class="docutils literal notranslate"><span class="pre">MathFunctions.cxx</span></code>中，我们使用<code class="docutils literal notranslate"><span class="pre">USE_MYMATH</span></code>来控制使用哪个平方根函数：</p>
+<details><summary>TODO 9: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="mathfunctions-use-mymath-if">
+<div class="code-block-caption"><span class="caption-text">TODO 9: MathFunctions/MathFunctions.cxx</span><a class="headerlink" href="#mathfunctions-use-mymath-if" title="Link to this code">¶</a></div>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifdef USE_MYMATH</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">detail</span><span class="o">::</span><span class="n">mysqrt</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+<span class="cp">#else</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</div>
+</details><p>接下来，如果定义了<code class="docutils literal notranslate"><span class="pre">USE_MYMATH</span></code>，我们需要包含<code class="docutils literal notranslate"><span class="pre">mysqrt.h</span></code>。</p>
+<details><summary>TODO 10: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="mathfunctions-use-mymath-if-include">
+<div class="code-block-caption"><span class="caption-text">TODO 10: MathFunctions/MathFunctions.cxx</span><a class="headerlink" href="#mathfunctions-use-mymath-if-include" title="Link to this code">¶</a></div>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifdef USE_MYMATH</span>
+<span class="cp">#</span><span class="w">  </span><span class="cp">include</span><span class="w"> </span><span class="cpf">&quot;mysqrt.h&quot;</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</div>
+</details><p>最后，在使用<code class="docutils literal notranslate"><span class="pre">std::sqrt</span></code>时，我们需要包含<code class="docutils literal notranslate"><span class="pre">cmath</span></code>。</p>
+<details><summary>TODO 11: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="tutorial-cxx-include-cmath">
+<div class="code-block-caption"><span class="caption-text">TODO 11 : MathFunctions/MathFunctions.cxx</span><a class="headerlink" href="#tutorial-cxx-include-cmath" title="Link to this code">¶</a></div>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cmath&gt;</span>
+</pre></div>
+</div>
+</div>
+</details><p>然后，在同一个文件中，我们让<code class="docutils literal notranslate"><span class="pre">USE_MYMATH</span></code>控制使用哪个平方根函数：</p>
+<details><summary>TODO 12: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="mathfunctions-cmakelists-txt-add-library-sqrtlibrary">
+<div class="code-block-caption"><span class="caption-text">TODO 12 : MathFunctions/CMakeLists.txt</span><a class="headerlink" href="#mathfunctions-cmakelists-txt-add-library-sqrtlibrary" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nf">add_library(</span><span class="nb">SqrtLibrary</span><span class="w"> </span><span class="no">STATIC</span>
+<span class="w">              </span><span class="nb">mysqrt.cxx</span>
+<span class="w">              </span><span class="nf">)</span>
+
+<span class="w">  </span><span class="c"># TODO 6: Link SqrtLibrary to tutorial_compiler_flags</span>
+
+<span class="w">  </span><span class="nf">target_link_libraries(</span><span class="nb">MathFunctions</span><span class="w"> </span><span class="no">PRIVATE</span><span class="w"> </span><span class="nb">SqrtLibrary</span><span class="nf">)</span>
+<span class="nf">endif()</span>
+</pre></div>
+</div>
+</div>
+</details><p>接下来，当启用<code class="docutils literal notranslate"><span class="pre">USE_MYMATH</span></code>时，我们将<code class="docutils literal notranslate"><span class="pre">SqrtLibrary</span></code>链接到<code class="docutils literal notranslate"><span class="pre">MathFunctions</span></code>。</p>
+<details><summary>TODO 13: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="mathfunctions-cmakelists-txt-target-link-libraries-sqrtlibrary">
+<div class="code-block-caption"><span class="caption-text">TODO 13 : MathFunctions/CMakeLists.txt</span><a class="headerlink" href="#mathfunctions-cmakelists-txt-target-link-libraries-sqrtlibrary" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="nf">target_link_libraries(</span><span class="nb">MathFunctions</span><span class="w"> </span><span class="no">PRIVATE</span><span class="w"> </span><span class="nb">SqrtLibrary</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details><p>最后，我们可以从<code class="docutils literal notranslate"><span class="pre">MathFunctions</span></code>库源列表中删除<code class="docutils literal notranslate"><span class="pre">mysqrt.cxx</span></code>，因为它将在包含<code class="docutils literal notranslate"><span class="pre">SqrtLibrary</span></code>时被拉入。</p>
+<details><summary>TODO 14: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="mathfunctions-cmakelists-txt-remove-mysqrt-cxx-mathfunctions">
+<div class="code-block-caption"><span class="caption-text">TODO 14 : MathFunctions/CMakeLists.txt</span><a class="headerlink" href="#mathfunctions-cmakelists-txt-remove-mysqrt-cxx-mathfunctions" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">add_library(</span><span class="nb">MathFunctions</span><span class="w"> </span><span class="nb">MathFunctions.cxx</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details><p>通过这些更改，<code class="docutils literal notranslate"><span class="pre">mysqrt</span></code>函数现在对于正在构建和使用<code class="docutils literal notranslate"><span class="pre">MathFunctions</span></code>库的人来说完全是可选的。用户可以切换<code class="docutils literal notranslate"><span class="pre">USE_MYMATH</span></code>来操作构建中使用的库。</p>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../../index.html">目录</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">步骤2：添加库</a><ul>
+<li><a class="reference internal" href="#id2">练习1 - 创建一个库</a><ul>
+<li><a class="reference internal" href="#id3">目标</a></li>
+<li><a class="reference internal" href="#id4">有用的资源</a></li>
+<li><a class="reference internal" href="#id5">待编辑的文件</a></li>
+<li><a class="reference internal" href="#id6">开始</a></li>
+<li><a class="reference internal" href="#id7">构建并运行</a></li>
+<li><a class="reference internal" href="#id8">解决方案</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id9">练习2 - 添加选项</a><ul>
+<li><a class="reference internal" href="#id10">目标</a></li>
+<li><a class="reference internal" href="#id11">有用的资源</a></li>
+<li><a class="reference internal" href="#id12">待编辑的文件</a></li>
+<li><a class="reference internal" href="#id13">开始</a></li>
+<li><a class="reference internal" href="#id14">构建并运行</a></li>
+<li><a class="reference internal" href="#id15">解决方案</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>上一主题</h4>
+    <p class="topless"><a href="A%20Basic%20Starting%20Point.html"
+                          title="上一章">步骤1：一个基本的起点</a></p>
+  </div>
+  <div>
+    <h4>下一主题</h4>
+    <p class="topless"><a href="Adding%20Usage%20Requirements%20for%20a%20Library.html"
+                          title="下一章">步骤3：添加库的使用需求</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>本页</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/guide/tutorial/Adding a Library.rst.txt"
+            rel="nofollow">显示源代码</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">快速搜索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="提交" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="Adding%20Usage%20Requirements%20for%20a%20Library.html" title="步骤3：添加库的使用需求"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="A%20Basic%20Starting%20Point.html" title="步骤1：一个基本的起点"
+             >上一页</a> |</li>
+  <li>
+    <img src="../../_static/cmake-logo-16.png" alt=""
+         style="vertical-align: middle; margin-top: -2px" />
+  </li>
+  <li>
+    <a href="https://cmake.org/">CMake</a> &#187;
+  </li>
+  <li>
+    <a href="../../index.html">3.29.1-g21d0c57 Documentation</a> &#187;
+  </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >CMake教程</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">步骤2：添加库</a></li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+    &#169; 版权所有 2000-2024 Kitware, Inc. and Contributors.
+      由 <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6创建。
+    </div>
+  </body>
+</html>

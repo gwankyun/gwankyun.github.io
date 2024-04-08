@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>步骤9: 打包一个安装包 &mdash; CMake 3.29.1-g21d0c57 Documentation</title>
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a2c47e09" />
+    <link rel="stylesheet" type="text/css" href="../../_static/cmake.css?v=3e562cf9" />
+    
+    <script src="../../_static/documentation_options.js?v=17f7ec5f"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/translations.js?v=beaddf03"></script>
+    
+    <link rel="icon" href="../../_static/cmake-favicon.ico"/>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="步骤10: 选择使用静态库或共享库" href="Selecting%20Static%20or%20Shared%20Libraries.html" />
+    <link rel="prev" title="步骤8: 添加自定义命令和生成文件" href="Adding%20a%20Custom%20Command%20and%20Generated%20File.html" />
+ 
+
+  </head><body>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="Selecting%20Static%20or%20Shared%20Libraries.html" title="步骤10: 选择使用静态库或共享库"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="Adding%20a%20Custom%20Command%20and%20Generated%20File.html" title="步骤8: 添加自定义命令和生成文件"
+             accesskey="P">上一页</a> |</li>
+  <li>
+    <img src="../../_static/cmake-logo-16.png" alt=""
+         style="vertical-align: middle; margin-top: -2px" />
+  </li>
+  <li>
+    <a href="https://cmake.org/">CMake</a> &#187;
+  </li>
+  <li>
+    <a href="../../index.html">3.29.1-g21d0c57 Documentation</a> &#187;
+  </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">CMake教程</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">步骤9: 打包一个安装包</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="guide:tutorial/Packaging an Installer">
+<span id="id1"></span><h1>步骤9: 打包一个安装包<a class="headerlink" href="#guide:tutorial/Packaging an Installer" title="Link to this heading">¶</a></h1>
+<p>我们下个愿望是分发工程走让别人使用它。我们想同时分发源码和二进制在不同的平台。这里我们之前讨论的<a class="reference internal" href="Installing%20and%20Testing.html#guide:tutorial/Installing and Testing" title="tutorial/Installing and Testing"><code class="xref cmake cmake-guide docutils literal notranslate"><span class="pre">安装和测试</span></code></a>不同的是，必须要在源码中编译。在此例子中，我们会构建一个安装包以支持二进制安装及包管理。为了达到这个目标我们应该使用CPack创建不同平台的安装包。应该在顶层<code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>开头添加几行。</p>
+<div class="literal-block-wrapper docutils container" id="cmakelists-txt-include-cpack">
+<div class="code-block-caption"><span class="caption-text">CMakeLists.txt</span><a class="headerlink" href="#cmakelists-txt-include-cpack" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">include(</span><span class="nb">InstallRequiredSystemLibraries</span><span class="nf">)</span>
+<span class="nf">set(</span><span class="no">CPACK_RESOURCE_FILE_LICENSE</span><span class="w"> </span><span class="s">&quot;${CMAKE_CURRENT_SOURCE_DIR}/License.txt&quot;</span><span class="nf">)</span>
+<span class="nf">set(</span><span class="no">CPACK_PACKAGE_VERSION_MAJOR</span><span class="w"> </span><span class="s">&quot;${Tutorial_VERSION_MAJOR}&quot;</span><span class="nf">)</span>
+<span class="nf">set(</span><span class="no">CPACK_PACKAGE_VERSION_MINOR</span><span class="w"> </span><span class="s">&quot;${Tutorial_VERSION_MINOR}&quot;</span><span class="nf">)</span>
+<span class="nf">set(</span><span class="no">CPACK_SOURCE_GENERATOR</span><span class="w"> </span><span class="s">&quot;TGZ&quot;</span><span class="nf">)</span>
+<span class="nf">include(</span><span class="nb">CPack</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+<p>这就是我们对它的所有修改。我们在开始包含<span class="target" id="index-0-module:InstallRequiredSystemLibraries"></span><a class="reference internal" href="../../module/InstallRequiredSystemLibraries.html#module:InstallRequiredSystemLibraries" title="InstallRequiredSystemLibraries"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">InstallRequiredSystemLibraries</span></code></a>。这个模块会包含当前项目在当前平台下所需的运行时库。接着我们用一些CPack变量以设置当前项目的许可证及版本号。版本号在教程之前的步骤中已经设置，<code class="docutils literal notranslate"><span class="pre">license.txt</span></code>已经添加在源码目录的最高层。<span class="target" id="index-0-variable:CPACK_SOURCE_GENERATOR"></span><a class="reference internal" href="../../module/CPack.html#variable:CPACK_SOURCE_GENERATOR" title="CPACK_SOURCE_GENERATOR"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CPACK_SOURCE_GENERATOR</span></code></a>变量可以为源码包选择一种文件格式。</p>
+<p>最终我们引用<span class="target" id="index-0-module:CPack"></span><a class="reference internal" href="../../module/CPack.html#module:CPack" title="CPack"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">CPack</span> <span class="pre">module</span></code></a>以使用这些变量或者其他属性以我于安装包。</p>
+<p>下一步就是按照通常习惯构建程序并运行<span class="target" id="index-0-manual:cpack(1)"></span><a class="reference internal" href="../../manual/cpack.1.html#manual:cpack(1)" title="cpack(1)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">cpack</span></code></a>命令。生成一个二进制包，你需要在二进制目录运行：</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cpack</span>
+</pre></div>
+</div>
+<p>要指定生成器，请使用<a class="reference internal" href="../../manual/cpack.1.html#cmdoption-cpack-G"><code class="xref std std-option docutils literal notranslate"><span class="pre">-G</span></code></a>选项。对于多配置版本，使用<a class="reference internal" href="../../manual/cpack.1.html#cmdoption-cpack-C"><code class="xref std std-option docutils literal notranslate"><span class="pre">-C</span></code></a>来指定配置。例如：</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cpack -G ZIP -C Debug</span>
+</pre></div>
+</div>
+<p>有关可用生成器的列表，请参见<span class="target" id="index-0-manual:cpack-generators(7)"></span><a class="reference internal" href="../../manual/cpack-generators.7.html#manual:cpack-generators(7)" title="cpack-generators(7)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">cpack-generators(7)</span></code></a>或调用<a class="reference internal" href="../../manual/cpack.1.html#cmdoption-cpack-h"><code class="xref std std-option docutils literal notranslate"><span class="pre">cpack</span> <span class="pre">--help</span></code></a>。像ZIP这样的<span class="target" id="index-0-cpack_gen:CPack Archive Generator"></span><a class="reference internal" href="../../cpack_gen/archive.html#cpack_gen:CPack Archive Generator" title="CPack Archive Generator"><code class="xref cmake cmake-cpack_gen docutils literal notranslate"><span class="pre">存档生成器</span></code></a>会为所有<em>已安装文件</em>创建一个压缩存档。</p>
+<p>如果想创建一个<em>完整的</em>源码分发包你应该输入：</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cpack --config CPackSourceConfig.cmake</span>
+</pre></div>
+</div>
+<p>作为替代，运行<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">package</span></code>命令或者在IDE中右击<code class="docutils literal notranslate"><span class="pre">Package</span></code>目标并<code class="docutils literal notranslate"><span class="pre">Build</span> <span class="pre">Project</span></code>。</p>
+<p>运行在二进制目录找到的安装包，验证是否如预期。</p>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h4>上一主题</h4>
+    <p class="topless"><a href="Adding%20a%20Custom%20Command%20and%20Generated%20File.html"
+                          title="上一章">步骤8: 添加自定义命令和生成文件</a></p>
+  </div>
+  <div>
+    <h4>下一主题</h4>
+    <p class="topless"><a href="Selecting%20Static%20or%20Shared%20Libraries.html"
+                          title="下一章">步骤10: 选择使用静态库或共享库</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>本页</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/guide/tutorial/Packaging an Installer.rst.txt"
+            rel="nofollow">显示源代码</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">快速搜索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="提交" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="Selecting%20Static%20or%20Shared%20Libraries.html" title="步骤10: 选择使用静态库或共享库"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="Adding%20a%20Custom%20Command%20and%20Generated%20File.html" title="步骤8: 添加自定义命令和生成文件"
+             >上一页</a> |</li>
+  <li>
+    <img src="../../_static/cmake-logo-16.png" alt=""
+         style="vertical-align: middle; margin-top: -2px" />
+  </li>
+  <li>
+    <a href="https://cmake.org/">CMake</a> &#187;
+  </li>
+  <li>
+    <a href="../../index.html">3.29.1-g21d0c57 Documentation</a> &#187;
+  </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >CMake教程</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">步骤9: 打包一个安装包</a></li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+    &#169; 版权所有 2000-2024 Kitware, Inc. and Contributors.
+      由 <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6创建。
+    </div>
+  </body>
+</html>

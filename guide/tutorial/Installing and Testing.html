@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>步骤5: 安装和测试 &mdash; CMake 3.29.1-g21d0c57 Documentation</title>
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a2c47e09" />
+    <link rel="stylesheet" type="text/css" href="../../_static/cmake.css?v=3e562cf9" />
+    
+    <script src="../../_static/documentation_options.js?v=17f7ec5f"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/translations.js?v=beaddf03"></script>
+    
+    <link rel="icon" href="../../_static/cmake-favicon.ico"/>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="步骤6: 添加对测试仪表板的支持" href="Adding%20Support%20for%20a%20Testing%20Dashboard.html" />
+    <link rel="prev" title="步骤4：添加生成器表达式" href="Adding%20Generator%20Expressions.html" />
+ 
+
+  </head><body>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="Adding%20Support%20for%20a%20Testing%20Dashboard.html" title="步骤6: 添加对测试仪表板的支持"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="Adding%20Generator%20Expressions.html" title="步骤4：添加生成器表达式"
+             accesskey="P">上一页</a> |</li>
+  <li>
+    <img src="../../_static/cmake-logo-16.png" alt=""
+         style="vertical-align: middle; margin-top: -2px" />
+  </li>
+  <li>
+    <a href="https://cmake.org/">CMake</a> &#187;
+  </li>
+  <li>
+    <a href="../../index.html">3.29.1-g21d0c57 Documentation</a> &#187;
+  </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">CMake教程</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">步骤5: 安装和测试</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="guide:tutorial/Installing and Testing">
+<span id="id1"></span><h1>步骤5: 安装和测试<a class="headerlink" href="#guide:tutorial/Installing and Testing" title="Link to this heading">¶</a></h1>
+<section id="id2">
+<h2>练习1 - 安装规则<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<p>通常，仅仅构建可执行文件是不够的，它还应该是可安装的。使用CMake，我们可以使用<span class="target" id="index-0-command:install"></span><a class="reference internal" href="../../command/install.html#command:install" title="install"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">install()</span></code></a>命令指定安装规则。在CMake中支持构建的本地安装通常非常简单，只需指定安装位置和要安装的目标和文件。</p>
+<section id="id3">
+<h3>目标<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<p>安装<code class="docutils literal notranslate"><span class="pre">Tutorial</span></code>可执行文件和<code class="docutils literal notranslate"><span class="pre">MathFunctions</span></code>库。</p>
+</section>
+<section id="id4">
+<h3>有用的材料<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><span class="target" id="index-1-command:install"></span><a class="reference internal" href="../../command/install.html#command:install" title="install"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">install()</span></code></a></p></li>
+</ul>
+</section>
+<section id="id5">
+<h3>待编辑的文件<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">MathFunctions/CMakeLists.txt</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code></p></li>
+</ul>
+</section>
+<section id="id6">
+<h3>开始<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
+<p>在<code class="docutils literal notranslate"><span class="pre">Step5</span></code>目录中提供了开始代码。在这个练习中，完成<code class="docutils literal notranslate"><span class="pre">TODO</span> <span class="pre">1</span></code>到<code class="docutils literal notranslate"><span class="pre">TODO</span> <span class="pre">4</span></code>。</p>
+<p>首先，更新<code class="docutils literal notranslate"><span class="pre">MathFunctions/CMakeLists.txt</span></code>，将<code class="docutils literal notranslate"><span class="pre">MathFunctions</span></code>和<code class="docutils literal notranslate"><span class="pre">tutorial_compiler_flags</span></code>库安装到<code class="docutils literal notranslate"><span class="pre">lib</span></code>目录。在同一文件中，指定将<code class="docutils literal notranslate"><span class="pre">MathFunctions.h</span></code>安装到<code class="docutils literal notranslate"><span class="pre">include</span></code>目录所需的安装规则。</p>
+<p>然后，更新顶层<code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>，将<code class="docutils literal notranslate"><span class="pre">Tutorial</span></code>可执行文件安装到<code class="docutils literal notranslate"><span class="pre">bin</span></code>目录。最后，任何头文件都应该安装到<code class="docutils literal notranslate"><span class="pre">include</span></code>目录中。记住<code class="docutils literal notranslate"><span class="pre">TutorialConfig.h</span></code>在<span class="target" id="index-0-variable:PROJECT_BINARY_DIR"></span><a class="reference internal" href="../../variable/PROJECT_BINARY_DIR.html#variable:PROJECT_BINARY_DIR" title="PROJECT_BINARY_DIR"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">PROJECT_BINARY_DIR</span></code></a>中。</p>
+</section>
+<section id="id7">
+<h3>构建并运行<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
+<p>创建一个名为<code class="docutils literal notranslate"><span class="pre">Step5_build</span></code>的新目录。运行<span class="target" id="index-0-manual:cmake(1)"></span><a class="reference internal" href="../../manual/cmake.1.html#manual:cmake(1)" title="cmake(1)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">cmake</span></code></a>可执行文件或<span class="target" id="index-0-manual:cmake-gui(1)"></span><a class="reference internal" href="../../manual/cmake-gui.1.html#manual:cmake-gui(1)" title="cmake-gui(1)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">cmake-gui</span></code></a>来配置项目，然后使用你选择的构建工具构建它。</p>
+<p>然后，在命令行中使用<span class="target" id="index-1-manual:cmake(1)"></span><a class="reference internal" href="../../manual/cmake.1.html#manual:cmake(1)" title="cmake(1)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">cmake</span></code></a>命令（在3.15中引入，旧版本的CMake必须使用<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">install</span></code>）的<a class="reference internal" href="../../manual/cmake.1.html#cmdoption-cmake-install"><code class="xref std std-option docutils literal notranslate"><span class="pre">--install</span></code></a>选项运行install步骤。这一步将安装适当的头文件、库和可执行文件。例如：</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cmake --install .</span>
+</pre></div>
+</div>
+<p>对于多配置工具，不要忘记使用<a class="reference internal" href="../../manual/cmake.1.html#cmdoption-cmake-build-config"><code class="xref std std-option docutils literal notranslate"><span class="pre">--config</span></code></a>参数来指定配置。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cmake --install . --config Release</span>
+</pre></div>
+</div>
+<p>如果使用IDE，只需构建<code class="docutils literal notranslate"><span class="pre">INSTALL</span></code>目标。你可以从命令行构建相同的安装目标，如下所示：</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cmake --build . --target install --config Debug</span>
+</pre></div>
+</div>
+<p>CMake变量<span class="target" id="index-0-variable:CMAKE_INSTALL_PREFIX"></span><a class="reference internal" href="../../variable/CMAKE_INSTALL_PREFIX.html#variable:CMAKE_INSTALL_PREFIX" title="CMAKE_INSTALL_PREFIX"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_INSTALL_PREFIX</span></code></a>用于确定将安装文件的根目录。如果使用<a class="reference internal" href="../../manual/cmake.1.html#cmdoption-cmake-install"><code class="xref std std-option docutils literal notranslate"><span class="pre">cmake</span> <span class="pre">--install</span></code></a>命令，可以通过<a class="reference internal" href="../../manual/cmake.1.html#cmdoption-cmake--install-0"><code class="xref std std-option docutils literal notranslate"><span class="pre">--prefix</span></code></a>参数覆盖安装前缀。例如：</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cmake --install . --prefix &quot;/home/myuser/installdir&quot;</span>
+</pre></div>
+</div>
+<p>导航到安装目录，并验证已安装的<code class="docutils literal notranslate"><span class="pre">Tutorial</span></code>是否运行。</p>
+</section>
+<section id="id8">
+<h3>解决方案<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h3>
+<p>我们项目的安装规则相当简单：</p>
+<ul class="simple">
+<li><p>对于<code class="docutils literal notranslate"><span class="pre">MathFunctions</span></code>，我们希望将库和头文件分别安装到<code class="docutils literal notranslate"><span class="pre">lib</span></code>及<code class="docutils literal notranslate"><span class="pre">include</span></code>目录中。</p></li>
+<li><p>对于<code class="docutils literal notranslate"><span class="pre">Tutorial</span></code>可执行文件，我们希望将可执行文件和配置的头文件分别安装到<code class="docutils literal notranslate"><span class="pre">bin</span></code>和<code class="docutils literal notranslate"><span class="pre">include</span></code>目录中。</p></li>
+</ul>
+<p>因此，在<code class="docutils literal notranslate"><span class="pre">MathFunctions/CMakeLists.txt</span></code>的末尾，我们添加：</p>
+<details><summary>TODO 1: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="mathfunctions-cmakelists-txt-install-targets">
+<div class="code-block-caption"><span class="caption-text">TODO 1: MathFunctions/CMakeLists.txt</span><a class="headerlink" href="#mathfunctions-cmakelists-txt-install-targets" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">set(</span><span class="nb">installable_libs</span><span class="w"> </span><span class="nb">MathFunctions</span><span class="w"> </span><span class="nb">tutorial_compiler_flags</span><span class="nf">)</span>
+<span class="nf">if(</span><span class="no">TARGET</span><span class="w"> </span><span class="nb">SqrtLibrary</span><span class="nf">)</span>
+<span class="w">  </span><span class="nf">list(</span><span class="no">APPEND</span><span class="w"> </span><span class="nb">installable_libs</span><span class="w"> </span><span class="nb">SqrtLibrary</span><span class="nf">)</span>
+<span class="nf">endif()</span>
+<span class="nf">install(</span><span class="no">TARGETS</span><span class="w"> </span><span class="o">${</span><span class="nt">installable_libs</span><span class="o">}</span><span class="w"> </span><span class="no">DESTINATION</span><span class="w"> </span><span class="nb">lib</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details><p>和</p>
+<details><summary>TODO 2: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="mathfunctions-cmakelists-txt-install-headers">
+<div class="code-block-caption"><span class="caption-text">TODO 2: MathFunctions/CMakeLists.txt</span><a class="headerlink" href="#mathfunctions-cmakelists-txt-install-headers" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">install(</span><span class="no">FILES</span><span class="w"> </span><span class="nb">MathFunctions.h</span><span class="w"> </span><span class="no">DESTINATION</span><span class="w"> </span><span class="nb">include</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details><p><code class="docutils literal notranslate"><span class="pre">Tutorial</span></code>可执行文件和配置头文件的安装规则类似。在顶层<code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>的末尾，我们添加：</p>
+<details><summary>TODO 3,4: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="todo-3-4-cmakelists-txt-install-targets">
+<div class="code-block-caption"><span class="caption-text">CMakeLists.txt</span><a class="headerlink" href="#todo-3-4-cmakelists-txt-install-targets" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">install(</span><span class="no">TARGETS</span><span class="w"> </span><span class="nb">Tutorial</span><span class="w"> </span><span class="no">DESTINATION</span><span class="w"> </span><span class="nb">bin</span><span class="nf">)</span>
+<span class="nf">install(</span><span class="no">FILES</span><span class="w"> </span><span class="s">&quot;${PROJECT_BINARY_DIR}/TutorialConfig.h&quot;</span>
+<span class="w">  </span><span class="no">DESTINATION</span><span class="w"> </span><span class="nb">include</span>
+<span class="w">  </span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details><p>这就是创建教程的基本本地安装所需要的全部内容。</p>
+</section>
+</section>
+<section id="tutorial-testing-support">
+<span id="id9"></span><h2>练习2 - 测试支持<a class="headerlink" href="#tutorial-testing-support" title="Link to this heading">¶</a></h2>
+<p>CTest提供了一种轻松管理项目测试的方法。可以通过<span class="target" id="index-0-command:add_test"></span><a class="reference internal" href="../../command/add_test.html#command:add_test" title="add_test"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">add_test()</span></code></a>命令添加测试。虽然在本教程中没有明确介绍，但CTest和其他测试框架（<span class="target" id="index-0-module:GoogleTest"></span><a class="reference internal" href="../../module/GoogleTest.html#module:GoogleTest" title="GoogleTest"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">GoogleTest</span></code></a>）之间有很多兼容性。</p>
+<section id="id10">
+<h3>目标<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h3>
+<p>使用CTest为我们的可执行文件创建单元测试。</p>
+</section>
+<section id="id11">
+<h3>有用的材料<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><span class="target" id="index-0-command:enable_testing"></span><a class="reference internal" href="../../command/enable_testing.html#command:enable_testing" title="enable_testing"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">enable_testing()</span></code></a></p></li>
+<li><p><span class="target" id="index-1-command:add_test"></span><a class="reference internal" href="../../command/add_test.html#command:add_test" title="add_test"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">add_test()</span></code></a></p></li>
+<li><p><span class="target" id="index-0-command:function"></span><a class="reference internal" href="../../command/function.html#command:function" title="function"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">function()</span></code></a></p></li>
+<li><p><span class="target" id="index-0-command:set_tests_properties"></span><a class="reference internal" href="../../command/set_tests_properties.html#command:set_tests_properties" title="set_tests_properties"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">set_tests_properties()</span></code></a></p></li>
+<li><p><span class="target" id="index-0-manual:ctest(1)"></span><a class="reference internal" href="../../manual/ctest.1.html#manual:ctest(1)" title="ctest(1)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">ctest</span></code></a></p></li>
+</ul>
+</section>
+<section id="id12">
+<h3>待编辑的文件<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code></p></li>
+</ul>
+</section>
+<section id="id13">
+<h3>开始<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h3>
+<p>在<code class="docutils literal notranslate"><span class="pre">Step5</span></code>目录中提供了起始源代码。在这个练习中，完成<code class="docutils literal notranslate"><span class="pre">TODO</span> <span class="pre">5</span></code>到<code class="docutils literal notranslate"><span class="pre">TODO</span> <span class="pre">9</span></code>。</p>
+<p>首先，我们需要启用测试。接下来，开始使用<span class="target" id="index-2-command:add_test"></span><a class="reference internal" href="../../command/add_test.html#command:add_test" title="add_test"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">add_test()</span></code></a>向我们的项目添加测试。我们将添加3个简单的测试，然后你可以根据需要添加额外的测试。</p>
+</section>
+<section id="id14">
+<h3>构建并运行<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h3>
+<p>导航到构建目录并重新构建应用程序。然后，运行<strong class="program">ctest</strong>可执行文件：<a class="reference internal" href="../../manual/ctest.1.html#cmdoption-ctest-N"><code class="xref std std-option docutils literal notranslate"><span class="pre">ctest</span> <span class="pre">-N</span></code></a>和<a class="reference internal" href="../../manual/ctest.1.html#cmdoption-ctest-VV"><code class="xref std std-option docutils literal notranslate"><span class="pre">ctest</span> <span class="pre">-VV</span></code></a>。对于多配置生成器（例如Visual Studio），配置类型必须用<a class="reference internal" href="../../manual/ctest.1.html#cmdoption-ctest-C"><code class="xref std std-option docutils literal notranslate"><span class="pre">-C</span> <span class="pre">&lt;mode&gt;</span></code></a>标志指定。例如，要在调试模式下运行测试，请从构建目录（而不是Debug子目录！）使用<code class="docutils literal notranslate"><span class="pre">ctest</span> <span class="pre">-C</span> <span class="pre">Debug</span> <span class="pre">-VV</span></code>。发布模式将从相同的位置执行，但使用<code class="docutils literal notranslate"><span class="pre">-C</span> <span class="pre">Release</span></code>。或者，从IDE构建<code class="docutils literal notranslate"><span class="pre">RUN_TESTS</span></code>目标。</p>
+</section>
+<section id="id15">
+<h3>解决方案<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h3>
+<p>让我们测试我们的应用程序。在顶层<code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>文件的末尾，我们首先需要使用<span class="target" id="index-1-command:enable_testing"></span><a class="reference internal" href="../../command/enable_testing.html#command:enable_testing" title="enable_testing"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">enable_testing()</span></code></a>命令启用测试。</p>
+<details><summary>TODO 5: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="cmakelists-txt-enable-testing">
+<div class="code-block-caption"><span class="caption-text">TODO 5: CMakeLists.txt</span><a class="headerlink" href="#cmakelists-txt-enable-testing" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">enable_testing()</span>
+</pre></div>
+</div>
+</div>
+</details><p>启用测试后，我们将添加一些基本测试，以验证应用程序是否正常工作。首先，我们使用<span class="target" id="index-3-command:add_test"></span><a class="reference internal" href="../../command/add_test.html#command:add_test" title="add_test"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">add_test()</span></code></a>创建一个测试，该测试运行带有传入参数25的<code class="docutils literal notranslate"><span class="pre">Tutorial</span></code>可执行文件。对于这个测试，我们不打算检查可执行文件的计算结果。该测试将验证应用程序运行，没有分段故障或崩溃，并且返回值为零。这是CTest测试的基本形式。</p>
+<details><summary>TODO 6: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="cmakelists-txt-test-runs">
+<div class="code-block-caption"><span class="caption-text">TODO 6: CMakeLists.txt</span><a class="headerlink" href="#cmakelists-txt-test-runs" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">add_test(</span><span class="no">NAME</span><span class="w"> </span><span class="nb">Runs</span><span class="w"> </span><span class="no">COMMAND</span><span class="w"> </span><span class="nb">Tutorial</span><span class="w"> </span><span class="m">25</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details><p>接下来，让我们使用<span class="target" id="index-0-prop_test:PASS_REGULAR_EXPRESSION"></span><a class="reference internal" href="../../prop_test/PASS_REGULAR_EXPRESSION.html#prop_test:PASS_REGULAR_EXPRESSION" title="PASS_REGULAR_EXPRESSION"><code class="xref cmake cmake-prop_test docutils literal notranslate"><span class="pre">PASS_REGULAR_EXPRESSION</span></code></a>测试属性来验证测试的输出是否包含某些字符串。在本例中，当提供的参数数量不正确时，验证是否打印了usage消息。</p>
+<details><summary>TODO 7: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="cmakelists-txt-test-usage">
+<div class="code-block-caption"><span class="caption-text">TODO 7: CMakeLists.txt</span><a class="headerlink" href="#cmakelists-txt-test-usage" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">add_test(</span><span class="no">NAME</span><span class="w"> </span><span class="nb">Usage</span><span class="w"> </span><span class="no">COMMAND</span><span class="w"> </span><span class="nb">Tutorial</span><span class="nf">)</span>
+<span class="nf">set_tests_properties(</span><span class="nb">Usage</span>
+<span class="w">  </span><span class="no">PROPERTIES</span><span class="w"> </span><span class="no">PASS_REGULAR_EXPRESSION</span><span class="w"> </span><span class="s">&quot;Usage:.*number&quot;</span>
+<span class="w">  </span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details><p>我们将添加的下一个测试验证计算值确实是平方根。</p>
+<details><summary>TODO 8: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="cmakelists-txt-test-standard">
+<div class="code-block-caption"><span class="caption-text">TODO 8: CMakeLists.txt</span><a class="headerlink" href="#cmakelists-txt-test-standard" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">add_test(</span><span class="no">NAME</span><span class="w"> </span><span class="nb">StandardUse</span><span class="w"> </span><span class="no">COMMAND</span><span class="w"> </span><span class="nb">Tutorial</span><span class="w"> </span><span class="m">4</span><span class="nf">)</span>
+<span class="nf">set_tests_properties(</span><span class="nb">StandardUse</span>
+<span class="w">  </span><span class="no">PROPERTIES</span><span class="w"> </span><span class="no">PASS_REGULAR_EXPRESSION</span><span class="w"> </span><span class="s">&quot;4 is 2&quot;</span>
+<span class="w">  </span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details><p>这个测试不足以让我们相信它对所有传入的值都有效。我们应该增加更多的测试来验证这一点。为了方便地添加更多测试，我们创建了一个名为<code class="docutils literal notranslate"><span class="pre">do_test</span></code>的函数，该函数运行应用程序并验证计算的平方根对于给定输入是否正确。对于<code class="docutils literal notranslate"><span class="pre">do_test</span></code>的每次调用，都会向项目中添加另一个测试，其中包含名称、输入和基于传递的参数的预期结果。</p>
+<details><summary>TODO 9: 点击显示/隐藏答案</summary><div class="literal-block-wrapper docutils container" id="cmakelists-txt-generalized-tests">
+<div class="code-block-caption"><span class="caption-text">TODO 9: CMakeLists.txt</span><a class="headerlink" href="#cmakelists-txt-generalized-tests" title="Link to this code">¶</a></div>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">function(</span><span class="nb">do_test</span><span class="w"> </span><span class="nb">target</span><span class="w"> </span><span class="nb">arg</span><span class="w"> </span><span class="nb">result</span><span class="nf">)</span>
+<span class="w">  </span><span class="nf">add_test(</span><span class="no">NAME</span><span class="w"> </span><span class="nb">Comp</span><span class="o">${</span><span class="nt">arg</span><span class="o">}</span><span class="w"> </span><span class="no">COMMAND</span><span class="w"> </span><span class="o">${</span><span class="nt">target</span><span class="o">}</span><span class="w"> </span><span class="o">${</span><span class="nt">arg</span><span class="o">}</span><span class="nf">)</span>
+<span class="w">  </span><span class="nf">set_tests_properties(</span><span class="nb">Comp</span><span class="o">${</span><span class="nt">arg</span><span class="o">}</span>
+<span class="w">    </span><span class="no">PROPERTIES</span><span class="w"> </span><span class="no">PASS_REGULAR_EXPRESSION</span><span class="w"> </span><span class="o">${</span><span class="nt">result</span><span class="o">}</span>
+<span class="w">    </span><span class="nf">)</span>
+<span class="nf">endfunction()</span>
+
+<span class="c"># 跑一些基于结果的测试</span>
+<span class="nf">do_test(</span><span class="nb">Tutorial</span><span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="s">&quot;4 is 2&quot;</span><span class="nf">)</span>
+<span class="nf">do_test(</span><span class="nb">Tutorial</span><span class="w"> </span><span class="m">9</span><span class="w"> </span><span class="s">&quot;9 is 3&quot;</span><span class="nf">)</span>
+<span class="nf">do_test(</span><span class="nb">Tutorial</span><span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="s">&quot;5 is 2.236&quot;</span><span class="nf">)</span>
+<span class="nf">do_test(</span><span class="nb">Tutorial</span><span class="w"> </span><span class="m">7</span><span class="w"> </span><span class="s">&quot;7 is 2.645&quot;</span><span class="nf">)</span>
+<span class="nf">do_test(</span><span class="nb">Tutorial</span><span class="w"> </span><span class="m">25</span><span class="w"> </span><span class="s">&quot;25 is 5&quot;</span><span class="nf">)</span>
+<span class="nf">do_test(</span><span class="nb">Tutorial</span><span class="w"> </span><span class="p">-</span><span class="m">25</span><span class="w"> </span><span class="s">&quot;-25 is (-nan|nan|0)&quot;</span><span class="nf">)</span>
+<span class="nf">do_test(</span><span class="nb">Tutorial</span><span class="w"> </span><span class="m">0.0001</span><span class="w"> </span><span class="s">&quot;0.0001 is 0.01&quot;</span><span class="nf">)</span>
+</pre></div>
+</div>
+</div>
+</details></section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../../index.html">目录</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">步骤5: 安装和测试</a><ul>
+<li><a class="reference internal" href="#id2">练习1 - 安装规则</a><ul>
+<li><a class="reference internal" href="#id3">目标</a></li>
+<li><a class="reference internal" href="#id4">有用的材料</a></li>
+<li><a class="reference internal" href="#id5">待编辑的文件</a></li>
+<li><a class="reference internal" href="#id6">开始</a></li>
+<li><a class="reference internal" href="#id7">构建并运行</a></li>
+<li><a class="reference internal" href="#id8">解决方案</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tutorial-testing-support">练习2 - 测试支持</a><ul>
+<li><a class="reference internal" href="#id10">目标</a></li>
+<li><a class="reference internal" href="#id11">有用的材料</a></li>
+<li><a class="reference internal" href="#id12">待编辑的文件</a></li>
+<li><a class="reference internal" href="#id13">开始</a></li>
+<li><a class="reference internal" href="#id14">构建并运行</a></li>
+<li><a class="reference internal" href="#id15">解决方案</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>上一主题</h4>
+    <p class="topless"><a href="Adding%20Generator%20Expressions.html"
+                          title="上一章">步骤4：添加生成器表达式</a></p>
+  </div>
+  <div>
+    <h4>下一主题</h4>
+    <p class="topless"><a href="Adding%20Support%20for%20a%20Testing%20Dashboard.html"
+                          title="下一章">步骤6: 添加对测试仪表板的支持</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>本页</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/guide/tutorial/Installing and Testing.rst.txt"
+            rel="nofollow">显示源代码</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">快速搜索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="提交" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="总索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="Adding%20Support%20for%20a%20Testing%20Dashboard.html" title="步骤6: 添加对测试仪表板的支持"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="Adding%20Generator%20Expressions.html" title="步骤4：添加生成器表达式"
+             >上一页</a> |</li>
+  <li>
+    <img src="../../_static/cmake-logo-16.png" alt=""
+         style="vertical-align: middle; margin-top: -2px" />
+  </li>
+  <li>
+    <a href="https://cmake.org/">CMake</a> &#187;
+  </li>
+  <li>
+    <a href="../../index.html">3.29.1-g21d0c57 Documentation</a> &#187;
+  </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >CMake教程</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">步骤5: 安装和测试</a></li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+    &#169; 版权所有 2000-2024 Kitware, Inc. and Contributors.
+      由 <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6创建。
+    </div>
+  </body>
+</html>

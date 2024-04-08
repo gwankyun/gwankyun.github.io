@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>CMake参考文档 &mdash; CMake 3.29.1-g21d0c57 Documentation</title>
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a2c47e09" />
+    <link rel="stylesheet" type="text/css" href="_static/cmake.css?v=3e562cf9" />
+    
+    <script src="_static/documentation_options.js?v=17f7ec5f"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/translations.js?v=beaddf03"></script>
+    
+    <link rel="icon" href="_static/cmake-favicon.ico"/>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="cmake(1)" href="manual/cmake.1.html" />
+ 
+
+  </head><body>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="总索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="manual/cmake.1.html" title="cmake(1)"
+             accesskey="N">下一页</a> |</li>
+  <li>
+    <img src="_static/cmake-logo-16.png" alt=""
+         style="vertical-align: middle; margin-top: -2px" />
+  </li>
+  <li>
+    <a href="https://cmake.org/">CMake</a> &#187;
+  </li>
+  <li>
+    <a href="#">3.29.1-g21d0c57 Documentation</a> &#187;
+  </li>
+
+        <li class="nav-item nav-item-this"><a href="">CMake参考文档</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="id1">
+<h1>引言<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h1>
+<p>CMake是一个管理源代码构建的工具。
+最初，CMake被设计为<code class="docutils literal notranslate"><span class="pre">Makefile</span></code>各种方言的生成器，现在CMake可以生成像<code class="docutils literal notranslate"><span class="pre">Ninja</span></code>这样的现代构建系统，也可以生成像Visual Studio和Xcode这样的IDE项目文件。</p>
+<p>CMake被广泛用于C和C++，但它也可以用于构建其他语言的源代码。</p>
+<p>第一次接触CMake的人可能有会不同的初始目标。学习如何建立一个从互联网上下载的源代码包，从<span class="target" id="index-0-guide:用户交互指南"></span><a class="reference internal" href="guide/user-interaction/index.html#guide:用户交互指南" title="用户交互指南"><code class="xref cmake cmake-guide docutils literal notranslate"><span class="pre">用户交互指南</span></code></a>开始。这将详细说明运行<span class="target" id="index-0-manual:cmake(1)"></span><a class="reference internal" href="manual/cmake.1.html#manual:cmake(1)" title="cmake(1)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">cmake(1)</span></code></a>或<span class="target" id="index-0-manual:cmake-gui(1)"></span><a class="reference internal" href="manual/cmake-gui.1.html#manual:cmake-gui(1)" title="cmake-gui(1)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">cmake-gui(1)</span></code></a>可执行文件所需的步骤，以及如何选择生成器、如何完成构建。</p>
+<p><span class="target" id="index-0-guide:使用依赖项指南"></span><a class="reference internal" href="guide/using-dependencies/index.html#guide:使用依赖项指南" title="使用依赖项指南"><code class="xref cmake cmake-guide docutils literal notranslate"><span class="pre">使用依赖项指南</span></code></a>针对的是希望使用第三方库的开发人员。</p>
+<p>对于使用CMake启动项目的开发人员来说，<span class="target" id="index-0-guide:CMake教程"></span><a class="reference internal" href="guide/tutorial/index.html#guide:CMake教程" title="CMake教程"><code class="xref cmake cmake-guide docutils literal notranslate"><span class="pre">CMake教程</span></code></a>是一个合适的起点。<span class="target" id="index-0-manual:cmake-buildsystem(7)"></span><a class="reference internal" href="manual/cmake-buildsystem.7.html#manual:cmake-buildsystem(7)" title="cmake-buildsystem(7)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">cmake-buildsystem(7)</span></code></a>手册的目标是开发人员扩展他们维护构建系统的知识，并熟悉可以用CMake表示的构建目标。<span class="target" id="index-0-manual:cmake-packages(7)"></span><a class="reference internal" href="manual/cmake-packages.7.html#manual:cmake-packages(7)" title="cmake-packages(7)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">cmake-packages(7)</span></code></a>手册解释了如何创建可以被基于CMake的第三方构建系统轻松使用的包。</p>
+</section>
+<section id="id2">
+<h1>命令行工具<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="manual/cmake.1.html">cmake(1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual/ctest.1.html">ctest(1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual/cpack.1.html">cpack(1)</a></li>
+</ul>
+</div>
+</section>
+<section id="id3">
+<h1>交互式对话框<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="manual/cmake-gui.1.html">cmake-gui(1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual/ccmake.1.html">ccmake(1)</a></li>
+</ul>
+</div>
+</section>
+<section id="id4">
+<h1>参考手册<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="manual/cmake-buildsystem.7.html">cmake-buildsystem(7)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual/cmake-commands.7.html">cmake-commands(7)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual/cmake-compile-features.7.html">cmake-compile-features(7)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual/cmake-configure-log.7.html">cmake-configure-log(7)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual/cmake-cxxmodules.7.html">cmake-cxxmodules(7)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual/cmake-developer.7.html">cmake-developer(7)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual/cmake-env-variables.7.html">cmake-env-variables(7)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual/cmake-file-api.7.html">cmake-file-api(7)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual/cmake-generator-expressions.7.html">cmake-generator-expressions(7)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual/cmake-generators.7.html">cmake-generators(7)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual/cmake-language.7.html">cmake-language(7)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual/cmake-modules.7.html">cmake-modules(7)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual/cmake-packages.7.html">cmake-packages(7)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual/cmake-policies.7.html">cmake-policies(7)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual/cmake-presets.7.html">cmake-presets(7)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual/cmake-properties.7.html">cmake-properties(7)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual/cmake-qt.7.html">cmake-qt(7)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual/cmake-server.7.html">cmake-server(7)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual/cmake-toolchains.7.html">cmake-toolchains(7)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual/cmake-variables.7.html">cmake-variables(7)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual/cpack-generators.7.html">cpack-generators(7)</a></li>
+</ul>
+</div>
+</section>
+<section id="id5">
+<h1>指南<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="guide/tutorial/index.html">CMake教程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide/user-interaction/index.html">用户交互指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide/using-dependencies/index.html">使用依赖项指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide/importing-exporting/index.html">导入导出指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide/ide-integration/index.html">IDE集成指南</a></li>
+</ul>
+</div>
+</section>
+<section id="id6">
+<h1>发行说明<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="release/index.html">CMake发行说明</a></li>
+</ul>
+</div>
+</section>
+<section id="id7">
+<h1>索引和搜索<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">索引</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">搜索页面</span></a></p></li>
+</ul>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="#">目录</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">引言</a></li>
+<li><a class="reference internal" href="#id2">命令行工具</a></li>
+<li><a class="reference internal" href="#id3">交互式对话框</a></li>
+<li><a class="reference internal" href="#id4">参考手册</a></li>
+<li><a class="reference internal" href="#id5">指南</a></li>
+<li><a class="reference internal" href="#id6">发行说明</a></li>
+<li><a class="reference internal" href="#id7">索引和搜索</a></li>
+</ul>
+
+  </div>
+  <div>
+    <h4>下一主题</h4>
+    <p class="topless"><a href="manual/cmake.1.html"
+                          title="下一章">cmake(1)</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>本页</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">显示源代码</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">快速搜索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="提交" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="总索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="manual/cmake.1.html" title="cmake(1)"
+             >下一页</a> |</li>
+  <li>
+    <img src="_static/cmake-logo-16.png" alt=""
+         style="vertical-align: middle; margin-top: -2px" />
+  </li>
+  <li>
+    <a href="https://cmake.org/">CMake</a> &#187;
+  </li>
+  <li>
+    <a href="#">3.29.1-g21d0c57 Documentation</a> &#187;
+  </li>
+
+        <li class="nav-item nav-item-this"><a href="">CMake参考文档</a></li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+    &#169; 版权所有 2000-2024 Kitware, Inc. and Contributors.
+      由 <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6创建。
+    </div>
+  </body>
+</html>
